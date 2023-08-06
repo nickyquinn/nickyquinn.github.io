@@ -1,0 +1,289 @@
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.justify {
+  text-align: justify;
+}
+
+.hidden-sm {
+  display: none;
+}
+
+.container {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media only screen and (min-width: 33.75em) {
+  .container {
+    width: 80%;
+  }
+}
+@media only screen and (min-width: 60em) {
+  .container {
+    width: 75%;
+    max-width: 60rem;
+  }
+}
+
+.row {
+  position: relative;
+  width: 100%;
+}
+
+.row [class^=col] {
+  float: left;
+  margin: 0.5rem 2%;
+  min-height: 0.125rem;
+}
+
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.col-1,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-10,
+.col-11,
+.col-12 {
+  width: 96%;
+}
+
+.col-1-sm {
+  width: 4.3333333333%;
+}
+
+.col-2-sm {
+  width: 12.6666666667%;
+}
+
+.col-3-sm {
+  width: 21%;
+}
+
+.col-4-sm {
+  width: 29.3333333333%;
+}
+
+.col-5-sm {
+  width: 37.6666666667%;
+}
+
+.col-6-sm {
+  width: 46%;
+}
+
+.col-7-sm {
+  width: 54.3333333333%;
+}
+
+.col-8-sm {
+  width: 62.6666666667%;
+}
+
+.col-9-sm {
+  width: 71%;
+}
+
+.col-10-sm {
+  width: 79.3333333333%;
+}
+
+.col-11-sm {
+  width: 87.6666666667%;
+}
+
+.col-12-sm {
+  width: 96%;
+}
+
+@media only screen and (min-width: 45em) {
+  .col-1 {
+    width: 4.3333333333%;
+  }
+  .col-2 {
+    width: 12.6666666667%;
+  }
+  .col-3 {
+    width: 21%;
+  }
+  .col-4 {
+    width: 29.3333333333%;
+  }
+  .col-5 {
+    width: 37.6666666667%;
+  }
+  .col-6 {
+    width: 46%;
+  }
+  .col-7 {
+    width: 54.3333333333%;
+  }
+  .col-8 {
+    width: 62.6666666667%;
+  }
+  .col-9 {
+    width: 71%;
+  }
+  .col-10 {
+    width: 79.3333333333%;
+  }
+  .col-11 {
+    width: 87.6666666667%;
+  }
+  .col-12 {
+    width: 96%;
+  }
+  .hidden-sm {
+    display: block;
+  }
+}
+body {
+  font-family: "Manrope", sans-serif;
+  font-size: 20px;
+  background: #f4f3f1;
+  color: #2B2B2B;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Lora", serif;
+  font-weight: 400;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+h1 + .page-intro {
+  margin-top: -1.6em;
+}
+
+h2 {
+  font-size: 1.6em;
+  margin: 0.7em 0;
+}
+
+h3 {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin: 0.5em 0;
+}
+
+a:link, a:visited {
+  color: #2B2B2B;
+  text-decoration-color: #fc5b35;
+  text-decoration-thickness: 0.125em;
+  text-underline-offset: 3px;
+  transition: all 0.2s linear;
+  border-radius: 0.1em;
+  padding: 2px;
+  box-sizing: border-box;
+  display: inline;
+}
+a:hover {
+  background: #fc5b35;
+  color: #FFF;
+  text-decoration-color: rgba(252, 91, 53, 0);
+}
+a[target=_blank] {
+  display: inline-block;
+}
+a[target=_blank]:not(.no_external_icon):after {
+  /* The icon can be a SVG or image file */
+  content: url("/assets/images/external-link.svg");
+  margin-left: 0.1rem;
+  transition: all 0.2s linear;
+  filter: brightness(0) saturate(100%) invert(48%) sepia(61%) saturate(2875%) hue-rotate(338deg) brightness(98%) contrast(102%);
+}
+a[target=_blank]:not(.no_external_icon):after:hover {
+  filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%) hue-rotate(213deg) brightness(104%) contrast(104%);
+}
+a[target=_blank]:hover:not(.no_external_icon):after {
+  /* The icon can be a SVG or image file */
+  content: url("/assets/images/external-link.svg");
+  margin-left: 0.1rem;
+  filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%) hue-rotate(213deg) brightness(104%) contrast(104%);
+}
+
+.container {
+  max-width: 1100px;
+}
+
+header .row {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+header .col-12 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-title {
+  font-family: "Lora", serif;
+  font-weight: 300;
+  font-size: 1.6em;
+  margin: 0.5em 0;
+  padding: 0;
+  line-height: 1em;
+  color: #2B2B2B;
+}
+
+nav ul {
+  display: flex;
+  height: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1em;
+}
+nav li {
+  margin: 0 0.3em;
+}
+
+img.rounded-circle {
+  border-radius: 50%;
+  width: 100%;
+}
+
+.meta-text {
+  font-size: 0.8em;
+  color: #999;
+  margin: 0.5em 0;
+}
+
+.page-navigation ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.page-navigation ol li {
+  display: inline-block;
+}
+
+p.page-intro {
+  color: #999;
+  font-style: italic;
+  font-size: 0.9em;
+}

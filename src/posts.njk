@@ -1,0 +1,30 @@
+---
+title: Posts
+layout: base.njk
+pagination:
+  data: collections.posts
+  size: 6
+  alias: paginatedposts
+  generatePageOnEmptyData: true
+---
+
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>Posts</h1>
+
+        <p class="page-intro">Anything of interest, thoughts, and other things.</p>
+
+        {% if paginatedposts.length === 0 %}
+          <h2>No posts yet! 😭</p>
+        {% endif %}
+        <ul>
+            {% for post in paginatedposts %}
+            <li><a href="{{ post.url }}">{{ post.data.title }}</a> <span class="meta-text">{{ post.date | isoDate }}</li>
+            {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

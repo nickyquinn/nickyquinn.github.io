@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-US-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nick Quinn — {{ title }}</title>
+    <link href="{{ '/assets/style/base.css' | url }}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;700&display=swap" rel="stylesheet">
+    {# <link rel="shortcut icon" href="https://jlord.github.io/assets/favicon_smile.png" type="image/png"> #}
+    {# <meta property="og:image" content="https://jlord.github.io/assets/hellohicard.jpg" type="image/jpg"/> #}
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:description" content="The home of Nick Quinn - full stack developer">
+    <meta property="og:type"  content="website">
+    <meta property="og:url"   content="{{ page.url }}">
+
+    {# <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@jllord" />
+    <meta name="twitter:creator" content="@jllord" /> #}
+  <body>
+    <header>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="site-title">
+              {% if page.url != "/" %}<a href="/">Nick Quinn</a>{% endif %}
+              {% if page.url === "/" %}Nick Quinn{% endif %}
+            </div>
+            <nav area-label="main">
+              <ul>
+                <li><a href="/about">About</a></li>
+                <li><a href="/posts">Posts</a></li>
+                <li><a href="/stuff">Stuff</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {# <p class="sans-meta-text"><a class="secret-link" href="/">JLORD — OPEN WEB DEVELOPER—DESIGNER</a></p>
+      <h1>{% if page.url === "/" %}<img class="hero-img" src="assets/imgs/hello3.png" alt="hello!">{% else %}{{ title }}{% endif %}</h1> #}
+    </header>
+
+    <main>
+        <article>
+            {{ content | safe }}
+        </article>
+    </main>
+
+    <footer>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+---
+title: Stuff
+layout: base.njk
+pagination:
+  data: likes
+  size: 20
+  alias: paginatedlikes
+  generatePageOnEmptyData: true
+  reverse: true
+---
+
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>Stuff</h1>
+
+        <p class="page-intro">Things I've liked, purchased, or found useful.</p>
+
+        <ul>
+            {% for post in paginatedlikes %}
+            <li><a href="{{ post.url }}" target="_blank">{{ post.title }}</a> {% if post.description %}<span class="meta-text"> - {{post.description}} {% endif %}</span></li>
+            {% endfor %}
+        </ul>
+
+        <nav class="page-navigation">
+            <ol>
+            {%- for pageEntry in pagination.pages %}
+                <li><a href="{{ pagination.hrefs[ loop.index0 ] }}"{% if page.url == pagination.hrefs[ loop.index0 ] %} aria-current="page"{% endif %}>Page {{ loop.index }}</a></li>
+            {%- endfor %}
+            </ol>
+        </nav>
+        
+      </div>
+    </div>
+  </div>
+</section>

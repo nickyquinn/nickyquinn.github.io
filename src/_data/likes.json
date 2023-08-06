@@ -1,0 +1,20 @@
+[
+    {
+        "title": "So I Married an Axe Murderer",
+        "url": "https://www.imdb.com/title/tt0108174/",
+        "tags": ["movie"],
+        "description": "A firm favourite"
+    },
+    {
+        "title": "CSS Tricks",
+        "url": "https://css-tricks.com/",
+        "tags": ["website", "devtool"],
+        "description": "For frontend, probably the site I refer to most."
+    },
+    {
+        "title": "Webaim accessibility evaluator tool",
+        "url": "https://wave.webaim.org/",
+        "tags": ["website", "devtool"],
+        "description": "Fantastic for ensuring you're meeting web accessibility guidelines."
+    }
+]

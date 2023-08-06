@@ -23,7 +23,7 @@ pagination:
             {% endfor %}
         </ul>
 
-        <nav class="page-navigation">
+        <nav class="page-navigation" label="stuff page navigation">
             <ol>
             {%- for pageEntry in pagination.pages %}
                 <li><a href="{{ pagination.hrefs[ loop.index0 ] }}"{% if page.url == pagination.hrefs[ loop.index0 ] %} aria-current="page"{% endif %}>Page {{ loop.index }}</a></li>

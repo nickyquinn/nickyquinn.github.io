@@ -4,7 +4,7 @@
 body {
     font-family: 'Manrope', sans-serif;
     font-size: 20px;
-    background: #f4f3f1;
+    background: $cream;
     color: $black;
 }
 
@@ -123,6 +123,8 @@ img {
         border-radius: 50%;
         width: 100%;
     }
+
+    max-width: 100%;
 }
 
 .meta-text {
@@ -148,3 +150,105 @@ p.page-intro {
     font-style: italic;
     font-size: 0.9em;
 }
+
+// Blockquote CSS
+blockquote {
+    border-left: 3px solid $orange;
+    color: #1a1a1a;
+    font-family: "Lora", serif;
+    font-size: 1.25em;
+    font-style: italic;
+    line-height: 1.8em;
+    // margin: 1.1em -4em;
+    padding: 1em 2em;
+    position: relative;
+    transition: .2s border ease-in-out;
+    z-index: 0;
+    &:before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -4px;
+      height: 2em;
+      background-color: $cream;
+      width: 5px;
+      margin-top: -1em;
+    }
+    &:after {
+      content: "“";
+      position: absolute;
+      top: 50%;
+      left: -0.5em;
+      color: $orange;
+      font-family: "Lora";
+      font-style: normal;
+      line-height: 1em;
+      text-align: center;
+      text-indent: -2px;
+      width: 1em;
+      margin-top: -0.25em;
+      font-size: 2.5em;
+      transition: .2s all ease-in-out, .4s transform ease-in-out;
+    }
+    &.format:before,
+    &.format:after {
+      display: none;
+    }
+    &.book:after {
+      content: "\f12e";
+    }
+    &.podcast:after {
+      content: "\f32d";
+    }
+    &.lyrics:after {
+      content: "\f333";
+    }
+    &.favorite:after {
+      content: "\f384";
+    }
+    &:active:after {
+      transform: rotateY(360deg);
+    }
+    cite {
+      display: block;
+      font-size: 0.75em;
+      line-height: 1.8em;
+      margin-top: 1em;
+    }
+  // Media Queries
+  }
+
+  @media (max-width: 980px) {
+    blockquote {
+      font-size: 1.1em;
+      margin: 1.1em -2em;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    blockquote {
+      border-top: 2px solid $orange;
+      border-bottom: 2px solid $orange;
+      border-left: none;
+      margin: 1.5em 0;
+      padding: 1.5em 1em;
+      &:before {
+        left: 50%;
+        top: 0;
+        height: 4px;
+        margin-top: -3px;
+        margin-left: -1em;
+        width: 2em;
+      }
+      &:after {
+        font-size: 0.75em;
+        left: 50%;
+        top: 0;
+        margin-top: -0.5em;
+        margin-left: -0.5em;
+      }
+      cite {
+        text-align: right;
+      }
+    }
+  }

@@ -159,11 +159,29 @@
     display: block;
   }
 }
+html, body {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 body {
   font-family: "Manrope", sans-serif;
   font-size: 20px;
   background: #f4f3f1;
   color: #2B2B2B;
+}
+
+.wrapper {
+  box-sizing: border-box;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-body {
+  flex-grow: 1;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -226,10 +244,30 @@ a[target=_blank]:hover:not(.no_external_icon):after {
   filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%) hue-rotate(213deg) brightness(104%) contrast(104%);
 }
 
+button, a.btn {
+  border: solid 1px #fc5b35;
+  background: #fc5b35;
+  cursor: pointer;
+  color: #FFF;
+  padding: 0.7em;
+  font-size: 1em;
+  border-radius: 0.25em;
+  transition: all 0.2s linear;
+}
+button:hover, a.btn:hover {
+  background: #fdad9a;
+  border-color: #fdad9a;
+  color: #2B2B2B;
+}
+
 .container {
   max-width: 1100px;
 }
 
+header {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 header .row {
   display: flex;
   height: 100%;
@@ -387,4 +425,58 @@ blockquote cite {
   blockquote cite {
     text-align: right;
   }
+}
+footer {
+  border-top: solid 2px #fc5b35;
+  padding: 0.5rem 0;
+  margin: 0.5rem 0 0 0;
+  text-align: left;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  font-size: 0.8em;
+}
+footer .social-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+footer .social-links li {
+  display: inline-block;
+  margin: 0 0.5rem;
+}
+
+.cookie-consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: #2B2B2B;
+  color: white;
+  z-index: 9999;
+  display: none;
+}
+.cookie-consent-banner.visible {
+  display: block;
+}
+.cookie-consent-banner button {
+  margin: 20px 0;
+}
+.cookie-consent-banner .consent-content {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.cookie-consent-cover {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 9998;
+  display: none;
+  position: fixed;
+}
+.cookie-consent-cover.visible {
+  display: block;
 }

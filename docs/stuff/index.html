@@ -16,7 +16,34 @@
     <meta property="og:url"   content="/stuff/">
 
     
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      if(localStorage.getItem("consentMode") === null) {
+        gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'analytics_storage': 'denied'
+        });
+      } else {
+        gtag("consent", "default", JSON.parse(localStorage.getItem("consentMode")));
+      }
+    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M98D584C');</script>
+    <!-- End Google Tag Manager -->
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M98D584C"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="wrapper">
     <header>
       <div class="container">
         <div class="row">
@@ -39,7 +66,7 @@
       
     </header>
 
-    <main>
+    <main class="page-body">
         <article>
             
 <section>
@@ -74,6 +101,80 @@
     </main>
 
     <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            © Nick Quinn 2021
+            <a href="javascript:void(0);" onclick="showConsentBanner(); return false;">Manage cookies</a>
+          </div>
+        </div>
+      </div>
     </footer>
+
+    <div id="cookie-consent-cover" class="cookie-consent-cover">
+    </div>
+
+    <div id="cookie-consent-banner" class="cookie-consent-banner">
+      <div class="consent-content">
+        <h3>Cookie settings</h3>
+        <p>I'd like to set cookies so I can see who has visited the site and understand what content is interesting. The data I collect is anonymous. If that's okay with you press 'accept selection', or you can customise whcih cookies you agree to first.</p>
+        
+        
+        <div class="cookie-consent-options">
+          <label><input id="consent-necessary" type="checkbox" value="Necessary" checked disabled>Necessary</label>
+          <label><input id="consent-analytics" type="checkbox" value="Analytics" checked>Analytics</label>
+          
+        </div>
+        <button id="btn-accept-some" class="cookie-consent-button btn-outline">Accept Selection</button>
+      </div>
+    </div>
+<script>
+  
+  function hideBanner() {
+    document.getElementById('cookie-consent-banner').classList.remove('visible');
+    document.getElementById('cookie-consent-cover').classList.remove('visible');
+  }
+
+  
+    document.getElementById('btn-accept-some').addEventListener('click', function() {
+      setConsent({
+        necessary: true,
+        analytics: document.getElementById('consent-analytics').checked,
+        preferences: false,
+        marketing: false
+        //preferences: document.getElementById('consent-preferences').checked,
+        //marketing: document.getElementById('consent-marketing').checked
+      });
+      hideBanner();
+    });
+    
+
+  if(localStorage.getItem('consentMode') === null) {
+    document.getElementById('cookie-consent-banner').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+  } else {
+    hideBanner();
+  }
+  
+  function setConsent(consent) {
+    const consentMode = {
+      'functionality_storage': consent.necessary ? 'granted' : 'denied',
+      'security_storage': consent.necessary ? 'granted' : 'denied',
+      'ad_storage': consent.marketing ? 'granted' : 'denied',
+      'analytics_storage': consent.analytics ? 'granted' : 'denied',
+      'personalization': consent.preferences ? 'granted' : 'denied',
+    };
+    gtag('consent', 'update', consent);  
+    localStorage.setItem('consentMode', JSON.stringify(consentMode));
+  }
+
+  function showConsentBanner() {
+    document.getElementById('cookie-consent-banner').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+  }
+  
+</script>
+
+    </div>
   </body>
 </html>

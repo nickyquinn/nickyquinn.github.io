@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xml:base="https://www.nickquinn.co.uk/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nick Quinn - weblog</title>
+    <link>https://www.nickquinn.co.uk/</link>
+    <atom:link href="https://www.nickquinn.co.uk/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Random thoughts and bits I find interesting</description>
+    <language>en-GB</language>
+    <item>
+      <title>Enforcing HTTPS on GitHub pages with Cloudflare</title>
+      <link>https://www.nickquinn.co.uk/posts/github-pages-with-cloudflare/</link>
+      <description>&lt;h1&gt;Enforcing HTTPS on GitHub pages with Cloudflare&lt;/h1&gt;
+&lt;p&gt;When setting up GitHub pages, you have the option to enforce HTTPS when you&#39;re using a custom domain,
+which is great, however, when you&#39;re using Cloudflare as your DNS provider you might find the option to enable
+HTTPS greyed out, and GitHub presents you with this error:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Unavailable for your site because your domain is not properly configured to support HTTPS&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This is usually because Cloudflare proxy is enabled (orange cloud icon), and GitHub
+sees that there&#39;s already a certificate in place, so it can&#39;t issue one itself.&lt;/p&gt;
+&lt;p&gt;The solution is to disable the proxy for the domain or subdomain in Cloudflare:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/github-pages-with-cloudflare/cf-proxy-off.png&quot; alt=&quot;Cloudflare proxy settings in the off state&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Once this is done, return to the GitHub pages settings, and remove and then re-add the custom domain. You should now be able to enable HTTPS:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/github-pages-with-cloudflare/enforce-https.png&quot; alt=&quot;GitHub pages HTTPS settings enabled&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Once this is done, you can re-enable the proxy in Cloudflare, and you&#39;re good to go.&lt;/p&gt;
+</description>
+      <pubDate>Sun, 06 Aug 2023 22:33:53 +0000</pubDate>
+      <dc:creator>Nick Quinn</dc:creator>
+      <guid>https://www.nickquinn.co.uk/posts/github-pages-with-cloudflare/</guid>
+    </item>
+  </channel>
+</rss>

@@ -24,4 +24,4 @@ Once this is done, return to the GitHub pages settings, and remove and then re-a
 
 ![GitHub pages HTTPS settings enabled](/assets/images/posts/github-pages-with-cloudflare/enforce-https.png)
 
-Once this is done, you can re-enable the proxy in Cloudflare, and you're good to go.
+Once this is done, you can re-enable the proxy in Cloudflare, but beware that when the certificate GitHub issues needs automatic renewal in three months, the Cloudflare proxy status will once more cause issues. You are best to 'grey-cloud' your CNAME records pointing to GitHub to prevent this.

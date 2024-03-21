@@ -22,7 +22,7 @@ sees that there&#39;s already a certificate in place, so it can&#39;t issue one 
 &lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/github-pages-with-cloudflare/cf-proxy-off.png&quot; alt=&quot;Cloudflare proxy settings in the off state&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;Once this is done, return to the GitHub pages settings, and remove and then re-add the custom domain. You should now be able to enable HTTPS:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/github-pages-with-cloudflare/enforce-https.png&quot; alt=&quot;GitHub pages HTTPS settings enabled&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;Once this is done, you can re-enable the proxy in Cloudflare, and you&#39;re good to go.&lt;/p&gt;
+&lt;p&gt;Once this is done, you can re-enable the proxy in Cloudflare, but beware that when the certificate GitHub issues needs automatic renewal in three months, the Cloudflare proxy status will once more cause issues. You are best to &#39;grey-cloud&#39; your CNAME records pointing to GitHub to prevent this.&lt;/p&gt;
 </description>
       <pubDate>Sun, 06 Aug 2023 22:33:53 +0000</pubDate>
       <dc:creator>Nick Quinn</dc:creator>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-US-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nick Quinn — Enforcing HTTPS on GitHub pages with Cloudflare</title>
+    <title>Nick Quinn — Including same-solution project dependencies in NuGet packages</title>
     <link href="/assets/style/base.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
     <meta property="og:title" content="">
     <meta property="og:description" content="The home of Nick Quinn - full stack developer">
     <meta property="og:type"  content="website">
-    <meta property="og:url"   content="/posts/github-pages-with-cloudflare/">
+    <meta property="og:url"   content="/posts/including-project-dependencies-in-nuget-packages/">
 
     
 
@@ -72,26 +72,15 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1>Enforcing HTTPS on GitHub pages with Cloudflare</h1>
-<p>When setting up GitHub pages, you have the option to enforce HTTPS when you're using a custom domain,
-which is great, however, when you're using Cloudflare as your DNS provider you might find the option to enable
-HTTPS greyed out, and GitHub presents you with this error:</p>
-<blockquote>
-<p>Unavailable for your site because your domain is not properly configured to support HTTPS</p>
-</blockquote>
-<p>This is usually because Cloudflare proxy is enabled (orange cloud icon), and GitHub
-sees that there's already a certificate in place, so it can't issue one itself.</p>
-<p>The solution is to disable the proxy for the domain or subdomain in Cloudflare:</p>
-<p><img src="/assets/images/posts/github-pages-with-cloudflare/cf-proxy-off.png" alt="Cloudflare proxy settings in the off state"></p>
-<p>Once this is done, return to the GitHub pages settings, and remove and then re-add the custom domain. You should now be able to enable HTTPS:</p>
-<p><img src="/assets/images/posts/github-pages-with-cloudflare/enforce-https.png" alt="GitHub pages HTTPS settings enabled"></p>
-<p>Once this is done, you can re-enable the proxy in Cloudflare, but beware that when the certificate GitHub issues needs automatic renewal in three months, the Cloudflare proxy status will once more cause issues. You are best to 'grey-cloud' your CNAME records pointing to GitHub to prevent this.</p>
+            <h1>Including same-solution project dependencies in NuGet packages</h1>
+<p>A regular pattern in .NET is to break software down into multiple projects within a Visual Studio solution; this helps developers visually identify separation of concerns, but it also allows parts of the code base to be different project types or languages. Another common reason may be that a solution produces more than one resulting piece of software, such as a web frontend, and an API for that frontend; in this scenario, you may have <em>three or more</em> projects: the web project, the API project, and one or more library project containing code that's shared between the first two - these additional library projects may include things such as DTOs or &quot;data transfer objects&quot; - objects whose only purpose is to carry data between processes. When each project is built, each gets a copy of any shared library DLLs.</p>
+<p>But what if one of your published outputs is a NuGet package? Things work differently here: NuGet packages do not automatically get bundled with their shared library projects, and viewing the nupkg file will reveal that it has a dependency on these projects, and that you're expected to provide them, potentially as separate NuGet packages. This is fine if you want this behaviour, but what if you don't?</p>
 
         </div>
     </div>
     <div class="row">
         <div class="col-12">
-            <span class="meta-text">Page last updated on Sun Aug 06 2023</span>
+            <span class="meta-text">Page last updated on Thu Mar 21 2024</span>
         </div>
     </div>
 </div>

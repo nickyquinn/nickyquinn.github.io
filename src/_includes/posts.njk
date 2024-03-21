@@ -7,12 +7,9 @@ layout: base.njk
         <div class="col-12">
             <div class="post_content">
                 {{ content | safe }}
+
+                <div class="meta-text">Posted on {{ page.date.toDateString() }}</span>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <span class="meta-text">Posted on {{ page.date.toDateString() }}</span>
         </div>
     </div>
 </div>

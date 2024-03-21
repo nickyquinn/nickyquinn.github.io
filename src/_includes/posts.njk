@@ -5,12 +5,14 @@ layout: base.njk
 <div class="container">
     <div class="row">
         <div class="col-12">
-            {{ content | safe }}
+            <div class="post_content">
+                {{ content | safe }}
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-12">
-            <span class="meta-text">Page last updated on {{ page.date.toDateString() }}</span>
+            <span class="meta-text">Posted on {{ page.date.toDateString() }}</span>
         </div>
     </div>
 </div>

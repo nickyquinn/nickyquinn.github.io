@@ -159,7 +159,13 @@
     display: block;
   }
 }
-html, body {
+.post_content {
+  max-width: 800px;
+  margin: auto;
+}
+
+html,
+body {
   box-sizing: border-box;
   height: 100%;
   padding: 0;
@@ -168,7 +174,7 @@ html, body {
 
 body {
   font-family: "Manrope", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   background: #f4f3f1;
   color: #2B2B2B;
 }
@@ -184,7 +190,12 @@ body {
   flex-grow: 1;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: "Lora", serif;
   font-weight: 400;
 }
@@ -221,7 +232,7 @@ a:link, a:visited {
 }
 a:hover {
   background: #fc5b35;
-  color: #FFF;
+  color: #fff;
   text-decoration-color: rgba(252, 91, 53, 0);
 }
 a[target=_blank] {
@@ -244,17 +255,19 @@ a[target=_blank]:hover:not(.no_external_icon):after {
   filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%) hue-rotate(213deg) brightness(104%) contrast(104%);
 }
 
-button, a.btn {
+button,
+a.btn {
   border: solid 1px #fc5b35;
   background: #fc5b35;
   cursor: pointer;
-  color: #FFF;
+  color: #fff;
   padding: 0.7em;
   font-size: 1em;
   border-radius: 0.25em;
   transition: all 0.2s linear;
 }
-button:hover, a.btn:hover {
+button:hover,
+a.btn:hover {
   background: #fdad9a;
   border-color: #fdad9a;
   color: #2B2B2B;

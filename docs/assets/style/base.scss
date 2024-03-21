@@ -1,7 +1,9 @@
 @import "_colours";
 @import "_simple-grid";
+@import "post";
 
-html, body {
+html,
+body {
   box-sizing: border-box;
   height: 100%;
   padding: 0;
@@ -9,10 +11,10 @@ html, body {
 }
 
 body {
-    font-family: 'Manrope', sans-serif;
-    font-size: 20px;
-    background: $cream;
-    color: $black;
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+  background: $cream;
+  color: $black;
 }
 
 .wrapper {
@@ -26,78 +28,88 @@ body {
   flex-grow: 1;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Lora', serif;
-    font-weight: 400;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Lora", serif;
+  font-weight: 400;
 }
 
 h1 {
-    font-size: 2em;
+  font-size: 2em;
 }
 
-h1+.page-intro {
-    margin-top: -1.6em;
+h1 + .page-intro {
+  margin-top: -1.6em;
 }
 
-h2 { 
-    font-size: 1.6em;
-    margin: 0.7em 0;
+h2 {
+  font-size: 1.6em;
+  margin: 0.7em 0;
 }
 
-h3 { 
-    font-size: 1.4em;
-    font-weight: 700;
-    margin: 0.5em 0;
+h3 {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin: 0.5em 0;
 }
 
 a {
-    &:link, &:visited {
-        color: $black;
-        text-decoration-color: $orange;
-        text-decoration-thickness: .125em;
-        text-underline-offset: 3px;
-        transition: all 0.2s linear;
-        border-radius: 0.10em;
-        padding: 2px;
-        box-sizing: border-box;
-        display: inline;
-    }
+  &:link,
+  &:visited {
+    color: $black;
+    text-decoration-color: $orange;
+    text-decoration-thickness: 0.125em;
+    text-underline-offset: 3px;
+    transition: all 0.2s linear;
+    border-radius: 0.1em;
+    padding: 2px;
+    box-sizing: border-box;
+    display: inline;
+  }
+
+  &:hover {
+    background: $orange;
+    color: #fff;
+    text-decoration-color: transparentize($color: $orange, $amount: 1);
+  }
+
+  //Show an external icon for any link that has a target="_blank" attribute
+  //except for links that have a class of "no_external_icon"
+  &[target="_blank"] {
+    display: inline-block;
+  }
+  &[target="_blank"]:not(.no_external_icon):after {
+    /* The icon can be a SVG or image file */
+    content: url("/assets/images/external-link.svg");
+    margin-left: 0.1rem;
+    transition: all 0.2s linear;
+    filter: brightness(0) saturate(100%) invert(48%) sepia(61%) saturate(2875%)
+      hue-rotate(338deg) brightness(98%) contrast(102%);
 
     &:hover {
-        background: $orange;
-        color: #FFF;
-        text-decoration-color: transparentize($color: $orange, $amount: 1);
+      filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%)
+        hue-rotate(213deg) brightness(104%) contrast(104%);
     }
-
-    //Show an external icon for any link that has a target="_blank" attribute
-    //except for links that have a class of "no_external_icon"
-    &[target='_blank'] {
-        display: inline-block;
-    }
-    &[target='_blank']:not(.no_external_icon):after {
-        /* The icon can be a SVG or image file */
-        content: url("/assets/images/external-link.svg");
-        margin-left: 0.1rem;
-        transition: all 0.2s linear;
-        filter: brightness(0) saturate(100%) invert(48%) sepia(61%) saturate(2875%) hue-rotate(338deg) brightness(98%) contrast(102%);
-
-        &:hover {
-            filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%) hue-rotate(213deg) brightness(104%) contrast(104%);
-        }
-    }
-    &[target='_blank']:hover:not(.no_external_icon):after {
-        /* The icon can be a SVG or image file */
-        content: url("/assets/images/external-link.svg");
-        margin-left: 0.1rem;
-        filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%) hue-rotate(213deg) brightness(104%) contrast(104%);
-    }
+  }
+  &[target="_blank"]:hover:not(.no_external_icon):after {
+    /* The icon can be a SVG or image file */
+    content: url("/assets/images/external-link.svg");
+    margin-left: 0.1rem;
+    filter: brightness(0) saturate(100%) invert(95%) sepia(97%) saturate(14%)
+      hue-rotate(213deg) brightness(104%) contrast(104%);
+  }
 }
 
-button, a.btn {
+button,
+a.btn {
   border: solid 1px $orange;
   background: $orange;
   cursor: pointer;
-  color: #FFF;
+  color: #fff;
   padding: 0.7em;
   font-size: 1em;
   border-radius: 0.25em;
@@ -111,246 +123,246 @@ button, a.btn {
 }
 
 .container {
-    max-width: 1100px;
+  max-width: 1100px;
 }
 
 header {
   flex-grow: 0;
   flex-shrink: 0;
-  
-    .row {
-        display: flex;
-        height: 100%;
-        align-items: center;
-    }
 
-    .col-12 {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+  .row {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  .col-12 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .site-title {
-    font-family: 'Lora', serif;
-    font-weight: 300;
-    font-size: 1.6em;
-    margin: 0.5em 0;
-    padding: 0;
-    line-height: 1em;
-    color: $black;
+  font-family: "Lora", serif;
+  font-weight: 300;
+  font-size: 1.6em;
+  margin: 0.5em 0;
+  padding: 0;
+  line-height: 1em;
+  color: $black;
 }
 
 nav {
-    ul {
-        display: flex;
-        height: 100%;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        line-height: 1em;
-    }
+  ul {
+    display: flex;
+    height: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+  }
 
-    li {
-        margin: 0 0.3em;
-    }
+  li {
+    margin: 0 0.3em;
+  }
 }
 
 img {
-    &.rounded-circle {
-        border-radius: 50%;
-        width: 100%;
-    }
+  &.rounded-circle {
+    border-radius: 50%;
+    width: 100%;
+  }
 
-    max-width: 100%;
+  max-width: 100%;
 }
 
 .meta-text {
-    font-size: 0.8em;
-    color: $grey;
-    margin: 0.5em 0;
+  font-size: 0.8em;
+  color: $grey;
+  margin: 0.5em 0;
 }
 
 .page-navigation {
-    ol {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 
-        li {
-            display: inline-block;
-        }
+    li {
+      display: inline-block;
     }
+  }
 }
 
 p.page-intro {
-    color: $grey;
-    font-style: italic;
-    font-size: 0.9em;
+  color: $grey;
+  font-style: italic;
+  font-size: 0.9em;
 }
 
 // Blockquote CSS
 blockquote {
-    border-left: 3px solid $orange;
-    color: #1a1a1a;
-    font-family: "Lora", serif;
-    font-size: 1.25em;
-    font-style: italic;
+  border-left: 3px solid $orange;
+  color: #1a1a1a;
+  font-family: "Lora", serif;
+  font-size: 1.25em;
+  font-style: italic;
+  line-height: 1.8em;
+  // margin: 1.1em -4em;
+  padding: 1em 2em;
+  position: relative;
+  transition: 0.2s border ease-in-out;
+  z-index: 0;
+  &:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -4px;
+    height: 2em;
+    background-color: $cream;
+    width: 5px;
+    margin-top: -1em;
+  }
+  &:after {
+    content: "“";
+    position: absolute;
+    top: 50%;
+    left: -0.5em;
+    color: $orange;
+    font-family: "Lora";
+    font-style: normal;
+    line-height: 1em;
+    text-align: center;
+    text-indent: -2px;
+    width: 1em;
+    margin-top: -0.25em;
+    font-size: 2.5em;
+    transition: 0.2s all ease-in-out, 0.4s transform ease-in-out;
+  }
+  &.format:before,
+  &.format:after {
+    display: none;
+  }
+  &.book:after {
+    content: "\f12e";
+  }
+  &.podcast:after {
+    content: "\f32d";
+  }
+  &.lyrics:after {
+    content: "\f333";
+  }
+  &.favorite:after {
+    content: "\f384";
+  }
+  &:active:after {
+    transform: rotateY(360deg);
+  }
+  cite {
+    display: block;
+    font-size: 0.75em;
     line-height: 1.8em;
-    // margin: 1.1em -4em;
-    padding: 1em 2em;
-    position: relative;
-    transition: .2s border ease-in-out;
-    z-index: 0;
+    margin-top: 1em;
+  }
+  // Media Queries
+}
+
+@media (max-width: 980px) {
+  blockquote {
+    font-size: 1.1em;
+    margin: 1.1em -2em;
+  }
+}
+
+@media (max-width: 767px) {
+  blockquote {
+    border-top: 2px solid $orange;
+    border-bottom: 2px solid $orange;
+    border-left: none;
+    margin: 1.5em 0;
+    padding: 1.5em 1em;
     &:before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: -4px;
-      height: 2em;
-      background-color: $cream;
-      width: 5px;
-      margin-top: -1em;
+      left: 50%;
+      top: 0;
+      height: 4px;
+      margin-top: -3px;
+      margin-left: -1em;
+      width: 2em;
     }
     &:after {
-      content: "“";
-      position: absolute;
-      top: 50%;
-      left: -0.5em;
-      color: $orange;
-      font-family: "Lora";
-      font-style: normal;
-      line-height: 1em;
-      text-align: center;
-      text-indent: -2px;
-      width: 1em;
-      margin-top: -0.25em;
-      font-size: 2.5em;
-      transition: .2s all ease-in-out, .4s transform ease-in-out;
-    }
-    &.format:before,
-    &.format:after {
-      display: none;
-    }
-    &.book:after {
-      content: "\f12e";
-    }
-    &.podcast:after {
-      content: "\f32d";
-    }
-    &.lyrics:after {
-      content: "\f333";
-    }
-    &.favorite:after {
-      content: "\f384";
-    }
-    &:active:after {
-      transform: rotateY(360deg);
+      font-size: 0.75em;
+      left: 50%;
+      top: 0;
+      margin-top: -0.5em;
+      margin-left: -0.5em;
     }
     cite {
-      display: block;
-      font-size: 0.75em;
-      line-height: 1.8em;
-      margin-top: 1em;
-    }
-  // Media Queries
-  }
-
-  @media (max-width: 980px) {
-    blockquote {
-      font-size: 1.1em;
-      margin: 1.1em -2em;
+      text-align: right;
     }
   }
-  
-  @media (max-width: 767px) {
-    blockquote {
-      border-top: 2px solid $orange;
-      border-bottom: 2px solid $orange;
-      border-left: none;
-      margin: 1.5em 0;
-      padding: 1.5em 1em;
-      &:before {
-        left: 50%;
-        top: 0;
-        height: 4px;
-        margin-top: -3px;
-        margin-left: -1em;
-        width: 2em;
-      }
-      &:after {
-        font-size: 0.75em;
-        left: 50%;
-        top: 0;
-        margin-top: -0.5em;
-        margin-left: -0.5em;
-      }
-      cite {
-        text-align: right;
-      }
+}
+
+//Footer
+footer {
+  border-top: solid 2px $orange;
+  padding: 0.5rem 0;
+  margin: 0.5rem 0 0 0;
+  text-align: left;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  font-size: 0.8em;
+
+  .social-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: inline-block;
+      margin: 0 0.5rem;
     }
   }
+}
 
-  //Footer
-  footer {
-    border-top: solid 2px $orange;
-    padding: 0.5rem 0;
-    margin: 0.5rem 0 0 0;
-    text-align: left;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    font-size: 0.8em;
+//Cookie consent banner
+.cookie-consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: $black;
+  color: white;
+  z-index: 9999;
+  display: none;
 
-    .social-links {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-
-      li {
-        display: inline-block;
-        margin: 0 0.5rem;
-      }
-    }
+  &.visible {
+    display: block;
   }
 
-  //Cookie consent banner
-  .cookie-consent-banner {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    background-color: $black;
-    color: white;
-    z-index: 9999;
-    display: none;
-
-    &.visible {
-      display: block;
-    }
-
-    button {
-      margin: 20px 0;
-    }
-
-    .consent-content {
-      max-width: 1000px;
-      margin: auto;
-    }
+  button {
+    margin: 20px 0;
   }
 
-  .cookie-consent-cover {
-    width: 100%;
-    height: 100%;
-    background: transparentize($color: #000000, $amount: 0.7);
-    //blur slightly
-    backdrop-filter: blur(2px);
-    z-index: 9998;
-    display: none;
-    position: fixed;
-
-    &.visible {
-      display: block;
-    }
+  .consent-content {
+    max-width: 1000px;
+    margin: auto;
   }
+}
+
+.cookie-consent-cover {
+  width: 100%;
+  height: 100%;
+  background: transparentize($color: #000000, $amount: 0.7);
+  //blur slightly
+  backdrop-filter: blur(2px);
+  z-index: 9998;
+  display: none;
+  position: fixed;
+
+  &.visible {
+    display: block;
+  }
+}

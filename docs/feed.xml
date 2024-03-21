@@ -28,5 +28,26 @@ sees that there&#39;s already a certificate in place, so it can&#39;t issue one 
       <dc:creator>Nick Quinn</dc:creator>
       <guid>https://www.nickquinn.co.uk/posts/github-pages-with-cloudflare/</guid>
     </item>
+    <item>
+      <title>Including same-solution project dependencies in NuGet packages</title>
+      <link>https://www.nickquinn.co.uk/posts/including-project-dependencies-in-nuget-packages/</link>
+      <description>&lt;h1&gt;Including same-solution project dependencies in NuGet packages&lt;/h1&gt;
+&lt;p&gt;A regular pattern in .NET is to break software down into multiple projects within a Visual Studio solution; this helps developers visually identify separation of concerns, but it also allows parts of the code base to be different project types or languages. Another common reason may be that a solution produces more than one resulting piece of software, such as a web frontend, and an API for that frontend; in this scenario, you may have &lt;em&gt;three or more&lt;/em&gt; projects: the web project, the API project, and one or more library project containing code that&#39;s shared between the first two - these additional library projects may include things such as DTOs or &amp;quot;data transfer objects&amp;quot; - objects whose only purpose is to carry data between processes. When each project is built, each gets a copy of any shared library DLLs.&lt;/p&gt;
+&lt;p&gt;But what if one of your published outputs is a NuGet package? Things work differently here: NuGet packages do not automatically get bundled with their shared library projects, and viewing the nupkg file will reveal that it has a dependency on these projects, and that you&#39;re expected to provide them, potentially as separate NuGet packages. This is fine if you want this behaviour, but what if you don&#39;t?&lt;/p&gt;
+&lt;p&gt;In the below screenshot I&#39;ve set up a three-project solution: the first is the NuGet package project, the middle is a shared project the NuGet package project will have a dependency on, and the SampleNugetConsumer is what I&#39;ll attempt to install the resulting NuGet package from the first project into:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/nuget-project-dependencies/the_nuget_sample_project.webp&quot; alt=&quot;Set up of the example NuGet project&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;If I build this project, and look at the information for the NuGet package in the NuGet package manager, it tells me that this package has a dependency on SampleNuget.Shared:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/nuget-project-dependencies/nuget_with_dependencies.webp&quot; alt=&quot;NuGet package manager showing the package with NuGet dependencies&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Trying to install this NuGet package results in an error, because the dependent package is not available:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/nuget-project-dependencies/need_nuget_dependencies.webp&quot; alt=&quot;Missing dependency error&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;By making the following additions (in red) to the NuGet package&#39;s csproj file, the shared project will be built and the resulting DLL will be made part of the NuGet package, instead of an external dependency:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/nuget-project-dependencies/changes_to_nuget_project.webp&quot; alt=&quot;Missing dependency error&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Now when I try to install the NuGet package, the external dependency is gone, and I can install the package, which now includes the shared project code:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/nuget-project-dependencies/dependency_free_nuget.webp&quot; alt=&quot;Installable NuGet package with no external dependencies&quot; /&gt;&lt;/p&gt;
+</description>
+      <pubDate>Fri, 22 Mar 2024 00:00:00 +0000</pubDate>
+      <dc:creator>Nick Quinn</dc:creator>
+      <guid>https://www.nickquinn.co.uk/posts/including-project-dependencies-in-nuget-packages/</guid>
+    </item>
   </channel>
 </rss>

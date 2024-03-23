@@ -3,7 +3,7 @@
         "title": "So I Married an Axe Murderer",
         "url": "https://www.imdb.com/title/tt0108174/",
         "tags": ["movie"],
-        "description": "A firm favourite"
+        "description": "A Mike Myers comedy thriller."
     },
     {
         "title": "CSS Tricks",
@@ -16,5 +16,11 @@
         "url": "https://wave.webaim.org/",
         "tags": ["website", "devtool"],
         "description": "Fantastic for ensuring you're meeting web accessibility guidelines."
+    },
+    {
+        "title":"'Domain Driven Design: Tackling Complexity in the Heart of Software' by Eric Evans",
+        "url":"https://amzn.eu/d/ggfHQDO",
+        "tags": ["book"],
+        "description": "The definitive resource for anyone interested in modeling software to match the domain."
     }
 ]

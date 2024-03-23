@@ -316,6 +316,7 @@ nav li {
 
 img {
   max-width: 100%;
+  height: auto;
 }
 img.rounded-circle {
   border-radius: 50%;

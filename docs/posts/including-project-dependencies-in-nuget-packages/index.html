@@ -77,15 +77,35 @@
 <p>A regular pattern in .NET is to break software down into multiple projects within a Visual Studio solution; this helps developers visually identify separation of concerns, but it also allows parts of the code base to be different project types or languages. Another common reason may be that a solution produces more than one resulting piece of software, such as a web frontend, and an API for that frontend; in this scenario, you may have <em>three or more</em> projects: the web project, the API project, and one or more library project containing code that's shared between the first two - these additional library projects may include things such as DTOs or &quot;data transfer objects&quot; - objects whose only purpose is to carry data between processes. When each project is built, each gets a copy of any shared library DLLs.</p>
 <p>But what if one of your published outputs is a NuGet package? Things work differently here: NuGet packages do not automatically get bundled with their shared library projects, and viewing the nupkg file will reveal that it has a dependency on these projects, and that you're expected to provide them, potentially as separate NuGet packages. This is fine if you want this behaviour, but what if you don't?</p>
 <p>In the below screenshot I've set up a three-project solution: the first is the NuGet package project, the middle is a shared project the NuGet package project will have a dependency on, and the SampleNugetConsumer is what I'll attempt to install the resulting NuGet package from the first project into:</p>
-<p><img src="/assets/images/posts/nuget-project-dependencies/the_nuget_sample_project.webp" alt="Set up of the example NuGet project"></p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/kGah140kO5-400.webp 400w, /assets/images/kGah140kO5-800.webp 800w, /assets/images/kGah140kO5-1280.webp 1280w, /assets/images/kGah140kO5-1860.webp 1860w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/kGah140kO5-400.jpeg 400w, /assets/images/kGah140kO5-800.jpeg 800w, /assets/images/kGah140kO5-1280.jpeg 1280w, /assets/images/kGah140kO5-1860.jpeg 1860w" sizes="100vw">
+      <img src="/assets/images/kGah140kO5-1860.webp" width="1860" height="604" alt="Set up of the example NuGet project" loading="lazy" decoding="async">
+    </picture>
 <p>If I build this project, and look at the information for the NuGet package in the NuGet package manager, it tells me that this package has a dependency on SampleNuget.Shared:</p>
-<p><img src="/assets/images/posts/nuget-project-dependencies/nuget_with_dependencies.webp" alt="NuGet package manager showing the package with NuGet dependencies"></p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/pWpTgYaMvx-400.webp 400w, /assets/images/pWpTgYaMvx-666.webp 666w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/pWpTgYaMvx-400.jpeg 400w, /assets/images/pWpTgYaMvx-666.jpeg 666w" sizes="100vw">
+      <img src="/assets/images/pWpTgYaMvx-666.webp" width="666" height="350" alt="NuGet package manager showing the package with NuGet dependencies" loading="lazy" decoding="async">
+    </picture>
 <p>Trying to install this NuGet package results in an error, because the dependent package is not available:</p>
-<p><img src="/assets/images/posts/nuget-project-dependencies/need_nuget_dependencies.webp" alt="Missing dependency error"></p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/q7zhjTykZa-400.webp 400w, /assets/images/q7zhjTykZa-800.webp 800w, /assets/images/q7zhjTykZa-1280.webp 1280w, /assets/images/q7zhjTykZa-1376.webp 1376w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/q7zhjTykZa-400.jpeg 400w, /assets/images/q7zhjTykZa-800.jpeg 800w, /assets/images/q7zhjTykZa-1280.jpeg 1280w, /assets/images/q7zhjTykZa-1376.jpeg 1376w" sizes="100vw">
+      <img src="/assets/images/q7zhjTykZa-1376.webp" width="1376" height="146" alt="Missing dependency error" loading="lazy" decoding="async">
+    </picture>
 <p>By making the following additions (in red) to the NuGet package's csproj file, the shared project will be built and the resulting DLL will be made part of the NuGet package, instead of an external dependency:</p>
-<p><img src="/assets/images/posts/nuget-project-dependencies/changes_to_nuget_project.webp" alt="Missing dependency error"></p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/3-SxZvctrF-400.webp 400w, /assets/images/3-SxZvctrF-800.webp 800w, /assets/images/3-SxZvctrF-1280.webp 1280w, /assets/images/3-SxZvctrF-1556.webp 1556w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/3-SxZvctrF-400.jpeg 400w, /assets/images/3-SxZvctrF-800.jpeg 800w, /assets/images/3-SxZvctrF-1280.jpeg 1280w, /assets/images/3-SxZvctrF-1556.jpeg 1556w" sizes="100vw">
+      <img src="/assets/images/3-SxZvctrF-1556.webp" width="1556" height="630" alt="Missing dependency error" loading="lazy" decoding="async">
+    </picture>
 <p>Now when I try to install the NuGet package, the external dependency is gone, and I can install the package, which now includes the shared project code:</p>
-<p><img src="/assets/images/posts/nuget-project-dependencies/dependency_free_nuget.webp" alt="Installable NuGet package with no external dependencies"></p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/05qwhXDQ8N-400.webp 400w, /assets/images/05qwhXDQ8N-800.webp 800w, /assets/images/05qwhXDQ8N-1280.webp 1280w, /assets/images/05qwhXDQ8N-1324.webp 1324w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/05qwhXDQ8N-400.jpeg 400w, /assets/images/05qwhXDQ8N-800.jpeg 800w, /assets/images/05qwhXDQ8N-1280.jpeg 1280w, /assets/images/05qwhXDQ8N-1324.jpeg 1324w" sizes="100vw">
+      <img src="/assets/images/05qwhXDQ8N-1324.webp" width="1324" height="320" alt="Installable NuGet package with no external dependencies" loading="lazy" decoding="async">
+    </picture>
 
 
                 <div class="meta-text">Posted on Fri Mar 22 2024</span>

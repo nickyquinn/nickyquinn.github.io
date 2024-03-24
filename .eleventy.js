@@ -87,6 +87,8 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addTemplateFormats("scss");
     eleventyConfig.addPassthroughCopy("./src/assets/style/")
     eleventyConfig.addPassthroughCopy("./src/assets/")
+    // Copy `img/favicon/` to `docs/`
+    eleventyConfig.addPassthroughCopy({ "./src/favicon": "/" });
     eleventyConfig.addWatchTarget("./src/assets/style/")
     eleventyConfig.addPlugin(pluginRss)
     eleventyConfig.addLiquidFilter("dateToRfc3339", pluginRss.dateToRfc3339)

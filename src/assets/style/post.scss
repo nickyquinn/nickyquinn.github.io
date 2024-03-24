@@ -1,4 +1,10 @@
 .post_content {
   max-width: 800px;
   margin: auto;
+
+  :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin: 1.5rem 0;
+  }
 }

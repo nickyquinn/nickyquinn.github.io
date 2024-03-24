@@ -2,7 +2,7 @@
 layout: posts.njk
 title: Should I use H1 for website title or individual page headings?
 tags: html,websites,seo
-draft: true
+draft: false
 date: 2024-03-25
 description: "A review of whether using H1 tags for the site heading or page heading is the best approach."
 ---

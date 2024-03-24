@@ -4,6 +4,7 @@ title: Including same-solution project dependencies in NuGet packages
 tags: programming,dotnet,nuget,package management,development,net core
 draft: false
 date: 2024-03-22
+description: "How to ensure your NuGet packages DLLs from other projects in the same solution."
 ---
 
 # Including same-solution project dependencies in NuGet packages

@@ -3,6 +3,8 @@ layout: posts.njk
 title: Enforcing HTTPS on GitHub pages with Cloudflare
 tags: programming,dns,cloudflare,github
 draft: false
+date: 2023-12-01
+description: "Enforcing HTTPs when using GitHub Pages and Cloudflare DNS"
 ---
 
 # Enforcing HTTPS on GitHub pages with Cloudflare

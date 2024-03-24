@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-US-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nick Quinn — {{ title }}</title>
+    <title>{{ title }} - Nick Quinn</title>
     <link href="{{ '/assets/style/base.css' | url }}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;700&display=swap" rel="stylesheet">
     {# <link rel="shortcut icon" href="https://jlord.github.io/assets/favicon_smile.png" type="image/png"> #}
     {# <meta property="og:image" content="https://jlord.github.io/assets/hellohicard.jpg" type="image/jpg"/> #}
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <meta property="og:title" content="{{ page.title }}">
-    <meta property="og:description" content="The home of Nick Quinn - full stack developer">
-    <meta property="og:type"  content="website">
-    <meta property="og:url"   content="{{ page.url }}">
+    <meta property="og:title" content="{{ title or renderData.title or metadata.title | escape }}"/>
+    <meta property="og:url" content="{{ page.url | escape }}" />
+    <meta property="og:description" content="{{ description or renderData.description | escape }}" />
+    <meta property="og:image" content="/favicon/apple-touch-icon.png" />
+    <meta property="og:type" content="article" />
 
     {# <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@jllord" />
@@ -81,7 +82,7 @@
         <div class="row">
           <div class="col-12">
             © Nick Quinn 2021
-            <a href="javascript:void(0);" onclick="showConsentBanner(); return false;">Manage cookies</a>
+            <a href="javascript:void(0);" onclick="showConsentModal(); return false;">Manage cookies</a>
             <a href="/feed.xml">RSS</a>
           </div>
         </div>
@@ -93,17 +94,25 @@
 
     <div id="cookie-consent-banner" class="cookie-consent-banner">
       <div class="consent-content">
-        <h3>Cookie settings</h3>
+        <h1>Use of cookies</h3>
         <p>I'd like to set cookies so I can see who has visited the site and understand what content is interesting. The data I collect is anonymous. If that's okay with you press 'accept selection', or you can customise whcih cookies you agree to first.</p>
-        {# <button id="btn-accept-all" class="cookie-consent-button btn-success">Accept All</button> #}
-        {# <button id="btn-reject-all" class="cookie-consent-button btn-grayscale">Reject All</button> #}
+        
+        <button id="btn-customise-cookies" class="cookie-consent-button btn-outline">Manage cookies</button>
+        <button id="btn-accept-all" class="cookie-consent-button btn">Accept</button>
+      </div>
+    </div>
+
+    <!-- Cookie consent modal html with options to reject or accept with checkboxes -->
+    <div id="cookie-consent-modal">
+      <div class="cookie-consent-modal-content">
+        <h1>Cookie settings</h1>
+        <p>I'd like to set cookies so I can see who has visited the site and understand what content is interesting. The data I collect is anonymous. If that's okay with you press 'accept selection', or you can customise whcih cookies you agree to first.</p>
         <div class="cookie-consent-options">
           <label><input id="consent-necessary" type="checkbox" value="Necessary" checked disabled>Necessary</label>
           <label><input id="consent-analytics" type="checkbox" value="Analytics" checked>Analytics</label>
-          {# <label><input id="consent-preferences" type="checkbox" value="Preferences" checked>Preferences</label>
-          <label><input id="consent-marketing" type="checkbox" value="Marketing">Marketing</label> #}
+          {# <label><input id="consent-marketing" type="checkbox" value="Marketing">Marketing</label> #}
         </div>
-        <button id="btn-accept-some" class="cookie-consent-button btn-outline">Accept Selection</button>
+        <button id="btn-accept-cookie-selection" class="cookie-consent-button btn-outline">Accept Selection</button>
       </div>
     </div>
 <script>
@@ -113,35 +122,38 @@
     document.getElementById('cookie-consent-cover').classList.remove('visible');
   }
 
-  {# document.getElementById('btn-accept-all').addEventListener('click', function() {
-      setConsent({
-        necessary: true,
-        analytics: true,
-        //preferences: true,
-        //marketing: true
-      });
-      hideBanner();
-    }); #}
-    document.getElementById('btn-accept-some').addEventListener('click', function() {
-      setConsent({
-        necessary: true,
-        analytics: document.getElementById('consent-analytics').checked,
-        preferences: false,
-        marketing: false
-        //preferences: document.getElementById('consent-preferences').checked,
-        //marketing: document.getElementById('consent-marketing').checked
-      });
-      hideBanner();
+  function hideConsentModal() {
+    document.getElementById('cookie-consent-modal').classList.remove('visible');
+    document.getElementById('cookie-consent-cover').classList.remove('visible');
+  }
+
+  document.getElementById('btn-customise-cookies').addEventListener('click', function() {
+    hideBanner();
+    showConsentModal();
+  });
+
+  document.getElementById('btn-accept-all').addEventListener('click', function() {
+    setConsent({
+      necessary: true,
+      analytics: true,
+      //preferences: true,
+      //marketing: true
     });
-    {# document.getElementById('btn-reject-all').addEventListener('click', function() {
-      setConsent({
-        necessary: false,
-        analytics: false,
-        //preferences: false,
-        //marketing: false
-      });
-      hideBanner();
-    }); #}
+    hideBanner();
+    hideConsentModal();
+  });
+
+  document.getElementById('btn-accept-cookie-selection').addEventListener('click', function() {
+    setConsent({
+      necessary: true,
+      analytics: document.getElementById('consent-analytics').checked,
+      //preferences: false,
+      //marketing: false
+    });
+    hideBanner();
+    hideConsentModal();
+  });
+    
 
   if(localStorage.getItem('consentMode') === null) {
     document.getElementById('cookie-consent-banner').classList.add('visible');
@@ -165,6 +177,18 @@
   function showConsentBanner() {
     document.getElementById('cookie-consent-banner').classList.add('visible');
     document.getElementById('cookie-consent-cover').classList.add('visible');
+  }
+
+  function showConsentModal() {
+    document.getElementById('cookie-consent-modal').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+
+    if(localStorage.getItem('consentMode') === null) {
+      document.getElementById('consent-analytics').checked = true;
+    } else {
+      const consentMode = JSON.parse(localStorage.getItem('consentMode'));
+      document.getElementById('consent-analytics').checked = consentMode.analytics_storage === 'granted';
+    }
   }
   
 </script>

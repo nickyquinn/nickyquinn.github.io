@@ -47,8 +47,8 @@ h1 + .page-intro {
 }
 
 h2 {
-  font-size: 1.6em;
-  margin: 0.7em 0;
+  font-size: 1.7em;
+  margin: 1.2em 0 0.6em 0;
 }
 
 h3 {
@@ -109,7 +109,7 @@ a.btn {
   border: solid 1px $orange;
   background: $orange;
   cursor: pointer;
-  color: #fff;
+  color: $black;
   padding: 0.7em;
   font-size: 1em;
   border-radius: 0.25em;
@@ -119,6 +119,18 @@ a.btn {
     background: lighten($orange, 20%);
     border-color: lighten($orange, 20%);
     color: $black;
+  }
+
+  //outline button
+  &.btn-outline {
+    background: transparent;
+    color: $orange;
+    border-color: $orange;
+
+    &:hover {
+      background: $orange;
+      color: $black;
+    }
   }
 }
 
@@ -350,6 +362,39 @@ footer {
   .consent-content {
     max-width: 1000px;
     margin: auto;
+  }
+}
+
+#cookie-consent-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 3rem;
+  background-color: $black;
+  color: white;
+  z-index: 9999;
+  display: none;
+  max-width: 800px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &.visible {
+    display: block;
+  }
+
+  button {
+    margin: 20px 0;
+  }
+
+  .consent-content {
+    max-width: 1000px;
+    margin: auto;
+  }
+
+  @media (max-width: 767px) {
+    padding: 20px;
   }
 }
 

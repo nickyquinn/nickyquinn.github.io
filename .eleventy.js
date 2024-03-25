@@ -17,7 +17,7 @@ const imageShortcode = async (
     formats = ['webp', 'jpeg'],
     sizes = '100vw'
 ) => {
-    console.log("SRC", src)
+    // console.log("SRC", src)
     const imageMetadata = await Image(src, {
         widths: [...widths, null],
         formats: [...formats, null],
@@ -93,7 +93,7 @@ const stringifyAttributes = (attributeMap) => {
 
 module.exports = function (eleventyConfig) {
     eleventyConfig.addTemplateFormats("scss");
-    eleventyConfig.addPassthroughCopy("./src/assets/style/")
+    //eleventyConfig.addPassthroughCopy("./src/assets/style/")
     eleventyConfig.addPassthroughCopy("./src/assets/")
     // Copy `img/favicon/` to `docs/`
     eleventyConfig.addPassthroughCopy({ "./src/favicon": "/" });
@@ -178,10 +178,7 @@ module.exports = function (eleventyConfig) {
             }
         },
         // Read the processed CSS content from the data object produced with `.getData()`.
-        compile: () => data => {
-            console.log("CSS>DATA", data)
-            data._content
-        }
+        compile: () => data => data._content
     });
 
     // Create a map of all output files; used as part of the hashed filenames

@@ -7,6 +7,7 @@ const sass = require("sass");
 const path = require("node:path");
 const Image = require('@11ty/eleventy-img');
 const outdent = require('outdent');
+const { createHash } = require('node:crypto');
 
 const imageShortcode = async (
     src,
@@ -70,6 +71,13 @@ const imageShortcode = async (
 
     return outdent`${picture}`;
 };
+
+function getHash(content, length = 8) {
+    return createHash('md5')
+        .update(content)
+        .digest('hex')
+        .substr(0, length);
+}
 
 /** Maps a config of attribute-value pairs to an HTML string
  * representing those same attribute-value pairs.
@@ -137,29 +145,60 @@ module.exports = function (eleventyConfig) {
             })
     )
 
-    // Process scss files
-    eleventyConfig.addExtension("scss", {
-        outputFileExtension: "css", // optional, default: "html"
+    // Process scss files - thanks to https://danburzo.ro/eleventy-sass/
+    eleventyConfig.addExtension('scss', {
+        // We're feeding the `inputPath` to Sass directly, so we don't need Eleventy to read the content of `.scss` files.
+        read: false,
 
-        // `compile` is called once per .scss file in the input directory
-        compile: async function (inputContent, inputPath) {
-            let parsed = path.parse(inputPath);
-            if (parsed.name.startsWith("_")) {
-                return;
+        // Produce the data for each `.scss` file, including its processed CSS content and its MD5 content hash.
+        getData: async function (inputPath) {
+            // Don't process .scss files that start with an underscore as standalone.
+            if (path.basename(inputPath).startsWith('_')) {
+                return false;
             }
-
-            let result = sass.compileString(inputContent, {
-                loadPaths: [
-                    parsed.dir || ".",
-                    this.config.dir.includes
-                ]
-            });
-
-            // This is the render function, `data` is the full data cascade
-            return async (data) => {
-                return result.css;
+            const { css } = sass.compile(inputPath);
+            return {
+                // Exclude .scss files from `collections.all` so they don't show up in sitemaps, RSS feeds, etc.
+                eleventyExcludeFromCollections: true,
+                _content: css,
+                _hash: getHash(css)
             };
+        },
+        compileOptions: {
+            // Disable caching of `.scss` files, for good measure.
+            cache: false,
+            permalink: function (permalink, inputPath) {
+                // Don't output .scss files that start with an underscore, as per Sass conventions…
+                if (path.basename(inputPath).startsWith('_')) {
+                    return false;
+                }
+
+                // …and for other .scss files include the MD5 content hash produced in the `.getData()` method in the output file path.
+                return data => `${data.page.filePathStem}.${data._hash}.css`;
+            }
+        },
+        // Read the processed CSS content from the data object produced with `.getData()`.
+        compile: () => data => {
+            console.log("CSS>DATA", data)
+            data._content
         }
+    });
+
+    // Create a map of all output files; used as part of the hashed filenames
+    // retrieval in CSS.
+    const outputMap = {};
+    eleventyConfig.addTransform('outputMap', function (content) {
+        const filepath = path.relative('src', this.page.inputPath);
+        outputMap[filepath] = this.page.url;
+        return content;
+    });
+
+    // Add a filter to retrieve the hashed filenames in CSS.
+    eleventyConfig.addFilter('hashed', function (filepath) {
+        if (!outputMap[filepath]) {
+            throw new Error(`hashed: ${filepath} not found in map.`);
+        }
+        return outputMap[filepath];
     });
 
     eleventyConfig.addShortcode('image', imageShortcode);

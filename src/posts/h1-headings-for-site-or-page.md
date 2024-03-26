@@ -1,13 +1,13 @@
 ---
 layout: posts.njk
-title: Should I use H1 for website title or individual page headings?
+title: Using H1 for a website's main title vs individual page headings
 tags: html,websites,seo
 draft: false
 date: 2024-03-25
 description: "A review of whether using H1 tags for the site heading or page heading is the best approach."
 ---
 
-# Should I use H1 for my website's main title, or individual page headings?
+# Using H1 for a website's main title vs individual page headings
 
 I was recently contacted by friends who had an SEO audit done on their website, and one of the items that was flagged in their SEO report was that they were using a 'Heading 1' or 'H1' tag for the name of their website, and using H2 tags for main titles of individual pages.
 

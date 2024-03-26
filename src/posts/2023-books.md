@@ -3,6 +3,7 @@ layout: posts.njk
 title: Books
 tags: books
 draft: true
+description: "A list of books I've read this in 2023."
 ---
 
 # 2023 books

@@ -81,7 +81,7 @@
       <div class="container">
         <div class="row">
           <div class="col-12">
-            © Nick Quinn 2021
+            © Nick Quinn <span id="site-year"></span>
             <a href="javascript:void(0);" onclick="showConsentModal(); return false;" rel="nofollow">Manage cookies</a>
             <a href="/feed.xml">RSS</a>
           </div>
@@ -190,6 +190,13 @@
       document.getElementById('consent-analytics').checked = consentMode.analytics_storage === 'granted';
     }
   }
+  // Set dynamic year in footer
+  (function() {
+    var yearEl = document.getElementById('site-year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+  })();
   
 </script>
 

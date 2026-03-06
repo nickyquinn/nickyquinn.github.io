@@ -2,9 +2,17 @@
   max-width: 800px;
   margin: auto;
 
-  :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+  :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(code):not(pre) {
     font-size: 1.2rem;
     line-height: 1.6;
     margin: 1.5rem 0;
+  }
+
+  code {
+    font-size: 1rem;
+  }
+
+  pre code {
+    font-size: 1rem;
   }
 }

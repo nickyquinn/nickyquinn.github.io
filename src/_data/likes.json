@@ -1,26 +1,84 @@
 [
     {
-        "title": "So I Married an Axe Murderer",
-        "url": "https://www.imdb.com/title/tt0108174/",
-        "tags": ["movie"],
-        "description": "A Mike Myers comedy thriller."
-    },
-    {
         "title": "CSS Tricks",
         "url": "https://css-tricks.com/",
-        "tags": ["website", "devtool"],
+        "tags": [
+            "website",
+            "devtool"
+        ],
         "description": "For frontend, probably the site I refer to most."
     },
     {
         "title": "Webaim accessibility evaluator tool",
         "url": "https://wave.webaim.org/",
-        "tags": ["website", "devtool"],
-        "description": "Fantastic for ensuring you're meeting web accessibility guidelines."
+        "tags": [
+            "website",
+            "devtool"
+        ],
+        "description": "A must-have for meeting web accessibility guidelines."
     },
     {
-        "title":"'Domain Driven Design: Tackling Complexity in the Heart of Software' by Eric Evans",
-        "url":"https://amzn.eu/d/ggfHQDO",
-        "tags": ["book"],
+        "title": "Model F Keyboards",
+        "url": "https://www.modelfkeyboards.com/",
+        "tags": [
+            "keyboards"
+        ],
+        "description": "Reproduction IBM Model F keyboards, built to the original buckling spring standard."
+    },
+    {
+        "title": "Privacy Guides",
+        "url": "https://www.privacyguides.org/",
+        "tags": [
+            "website"
+        ],
+        "description": "Tools and guides to protect your privacy online."
+    },
+    {
+        "title": "Home Assistant",
+        "url": "https://www.home-assistant.io/",
+        "tags": [
+            "homelab"
+        ],
+        "description": "Open source home automation that puts local control and privacy first."
+    },
+    {
+        "title": "Oh My Posh",
+        "url": "https://ohmyposh.dev/",
+        "tags": [
+            "devtool"
+        ],
+        "description": "A prompt theme engine for any shell."
+    },
+    {
+        "title": "Smashing Security by Graham Cluley",
+        "url": "https://www.smashingsecurity.com/",
+        "tags": [
+            "podcast"
+        ],
+        "description": "Weekly cybersecurity news and discussion, without the jargon."
+    },
+    {
+        "title": "The Missing Cryptoqueen (BBC)",
+        "url": "https://podcasts.apple.com/gb/podcast/the-missing-cryptoqueen/id1480370173",
+        "tags": [
+            "podcast"
+        ],
+        "description": "The story of Dr Ruja Ignatova, who persuaded millions to invest in her cryptocurrency OneCoin, then vanished."
+    },
+    {
+        "title": "Darknet Diaries by Jack Rhysider",
+        "url": "https://darknetdiaries.com/",
+        "tags": [
+            "podcast"
+        ],
+        "description": "True stories from the dark side of the internet."
+    },
+    {
+        "title": "'Domain Driven Design: Tackling Complexity in the Heart of Software' by Eric Evans",
+        "url": "https://amzn.eu/d/ggfHQDO",
+        "tags": [
+            "book"
+        ],
         "description": "The definitive resource for anyone interested in modeling software to match the domain."
     }
 ]

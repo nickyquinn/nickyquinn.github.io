@@ -11,11 +11,13 @@ description: "How to use @azure/msal-browser and an Axios interceptor to attach 
 
 When building a React app that authenticates via Microsoft Entra ID (formerly Azure AD) and needs to call a protected .NET API, you'll need to attach a Bearer token to every outgoing request. Rather than doing this manually in each API call, you can use an Axios interceptor to handle it in one place using `@azure/msal-browser`.
 
-You'll need `@azure/msal-browser` and `axios` installed, and an Entra ID app registration with a client ID and an API scope exposed (e.g. `api://<your-client-id>/access_as_user`).
+You'll need @azure/msal-browser and axios installed, and an Entra ID app 
+registration with a client ID and an API scope exposed — something like 
+api://<your-client-id>/access_as_user.
 
 ## Initialising MSAL
 
-First, create a file to configure and export a `PublicClientApplication` instance:
+First, create and export a `PublicClientApplication` instance:
 
 ```js
 // src/msalInstance.js
@@ -32,7 +34,8 @@ const msalConfig = {
 export const msalInstance = new PublicClientApplication(msalConfig);
 ```
 
-Then call `initialize()` in your app entry point before rendering — MSAL needs to process any redirect responses before you start making token requests, so it's worth wrapping your render in an async init function:
+MSAL needs to process any redirect responses before you start making token 
+requests, so call initialize() before rendering:
 
 ```js
 // src/main.jsx
@@ -56,7 +59,11 @@ init();
 
 ## The Axios interceptor
 
-With MSAL set up, you can add a request interceptor that silently acquires a token and attaches it as a `Bearer` header before every request:
+It's worth setting the active account here too, before any components 
+render and potentially trigger API calls — if no active account is set, 
+acquireTokenSilent will throw.
+
+With that done, the interceptor itself is straightforward:
 
 ```js
 // src/apiClient.js
@@ -110,36 +117,11 @@ apiClient.interceptors.request.use(async (config) => {
 export default apiClient;
 ```
 
-`acquireTokenSilent` returns a cached or silently refreshed token without any user interaction, only making a network call when necessary. When it isn't possible — for example when the user needs to consent to a new scope or their session has expired — it throws `InteractionRequiredAuthError`, at which point you fall back to `acquireTokenPopup`.
+`acquireTokenSilent` returns a cached or silently refreshed token where 
+possible, falling back to a popup when it can't — for example if the user 
+needs to consent to a new scope, or their session has expired.
 
-## Things to watch out for
-
-**Set the active account before calling `acquireTokenSilent`**
-
-If no active account is set, `acquireTokenSilent` will throw. After your app loads, set the active account from the list of cached accounts:
-
-```js
-await msalInstance.initialize();
-await msalInstance.handleRedirectPromise();
-
-const accounts = msalInstance.getAllAccounts();
-if (accounts.length > 0) {
-  msalInstance.setActiveAccount(accounts[0]);
-}
-```
-
-It's worth doing this before rendering any components that might trigger API calls.
-
-**Use the full scope URI**
-
-The scope passed to `acquireTokenSilent` must be the full URI, which is easy to get wrong:
-
-```js
-// Wrong — gets a Microsoft Graph token, not your API token
-const scopes = ["access_as_user"];
-
-// Correct
-const scopes = ["api://<your-client-id>/access_as_user"];
-```
-
-Using the short form, MSAL doesn't recognise it as a custom API scope and issues a token for Microsoft Graph instead. Your .NET API will reject it with a 401 because the audience (`aud` claim) in the token won't match, which can be a frustrating one to debug.
+One thing that caught me out: the scope needs to be the full URI. Using 
+just "access_as_user" causes MSAL to issue a Microsoft Graph token instead 
+of one for your API, and the .NET API will reject it with a 401 because 
+the `aud` claim won't match.

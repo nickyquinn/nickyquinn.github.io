@@ -17,9 +17,11 @@ pagination:
 
         <p class="page-intro">Things I've liked, purchased, or found useful.</p>
 
-        <ul>
+        <ul class="post-list">
             {% for post in paginatedlikes %}
-            <li><a href="{{ post.url }}" target="_blank">{{ post.title }}</a> {% if post.description %}<span class="meta-text"> - {{post.description}} {% endif %}</span></li>
+            <li>
+              <div><a href="{{ post.url }}" target="_blank">{{ post.title }}</a>{% if post.description %}<span class="meta-text"> {{post.description}}</span>{% endif %}</div>
+            </li>
             {% endfor %}
         </ul>
 

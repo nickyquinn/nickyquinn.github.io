@@ -19,9 +19,12 @@ pagination:
         {% if paginatedposts.length === 0 %}
           <h2>No posts yet! 😭</p>
         {% endif %}
-        <ul>
+        <ul class="post-list">
             {% for post in paginatedposts %}
-            <li><a href="{{ post.url }}">{{ post.data.title }}</a> <span class="meta-text">{{ post.date | isoDate }}</li>
+            <li>
+              <a href="{{ post.url }}">{{ post.data.title }}</a>
+              <span class="post-date">{{ post.date | readableMonth }}</span>
+            </li>
             {% endfor %}
         </ul>
       </div>

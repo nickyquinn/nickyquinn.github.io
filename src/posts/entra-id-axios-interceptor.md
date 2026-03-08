@@ -2,7 +2,7 @@
 layout: posts.njk
 title: Attaching Entra ID tokens to Axios requests in React
 tags: programming,react,azure,authentication
-draft: false
+draft: true
 date: 2026-03-06
 description: "How to use @azure/msal-browser and an Axios interceptor to attach Entra ID Bearer tokens to every API request."
 ---

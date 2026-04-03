@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xml:base="https://www.nickquinn.co.uk/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nick Quinn - weblog</title>
+    <link>https://www.nickquinn.co.uk/</link>
+    <atom:link href="https://www.nickquinn.co.uk/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Random thoughts and bits I find interesting</description>
+    <language>en-GB</language>
+    <item>
+      <title>Enforcing HTTPS on GitHub pages with Cloudflare</title>
+      <link>https://www.nickquinn.co.uk/posts/github-pages-with-cloudflare/</link>
+      <description>&lt;h1&gt;Enforcing HTTPS on GitHub pages with Cloudflare&lt;/h1&gt;
+&lt;p&gt;When setting up GitHub pages, you have the option to enforce HTTPS when you&#39;re using a custom domain,
+which is great, however, when you&#39;re using Cloudflare as your DNS provider you might find the option to enable
+HTTPS greyed out, and GitHub presents you with this error:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Unavailable for your site because your domain is not properly configured to support HTTPS&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This is usually because Cloudflare proxy is enabled (orange cloud icon), and GitHub
+sees that there&#39;s already a certificate in place, so it can&#39;t issue one itself.&lt;/p&gt;
+&lt;p&gt;The solution is to disable the proxy for the domain or subdomain in Cloudflare:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/github-pages-with-cloudflare/cf-proxy-off.png&quot; alt=&quot;Cloudflare proxy settings in the off state&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Once this is done, return to the GitHub pages settings, and remove and then re-add the custom domain. You should now be able to enable HTTPS:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/posts/github-pages-with-cloudflare/enforce-https.png&quot; alt=&quot;GitHub pages HTTPS settings enabled&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Once this is done, you can re-enable the proxy in Cloudflare, but beware that when the certificate GitHub issues needs automatic renewal in three months, the Cloudflare proxy status will once more cause issues. You are best to &#39;grey-cloud&#39; your CNAME records pointing to GitHub to prevent this.&lt;/p&gt;
+</description>
+      <pubDate>Fri, 01 Dec 2023 00:00:00 GMT</pubDate>
+      <dc:creator>Nick Quinn</dc:creator>
+      <guid>https://www.nickquinn.co.uk/posts/github-pages-with-cloudflare/</guid>
+    </item>
+    <item>
+      <title>Including same-solution project dependencies in NuGet packages</title>
+      <link>https://www.nickquinn.co.uk/posts/including-project-dependencies-in-nuget-packages/</link>
+      <description>&lt;h1&gt;Including same-solution project dependencies in NuGet packages&lt;/h1&gt;
+&lt;p&gt;A regular pattern in .NET is to break software down into multiple projects within a Visual Studio solution; this helps developers visually identify separation of concerns, but it also allows parts of the code base to be different project types or languages. Another common reason may be that a solution produces more than one resulting piece of software, such as a web frontend, and an API for that frontend; in this scenario, you may have &lt;em&gt;three or more&lt;/em&gt; projects: the web project, the API project, and one or more library project containing code that&#39;s shared between the first two - these additional library projects may include things such as DTOs or &amp;quot;data transfer objects&amp;quot; - objects whose only purpose is to carry data between processes. When each project is built, each gets a copy of any shared library DLLs.&lt;/p&gt;
+&lt;p&gt;But what if one of your published outputs is a NuGet package? Things work differently here: NuGet packages do not automatically get bundled with their shared library projects, and viewing the nupkg file will reveal that it has a dependency on these projects, and that you&#39;re expected to provide them, potentially as separate NuGet packages. This is fine if you want this behaviour, but what if you don&#39;t?&lt;/p&gt;
+&lt;p&gt;In the below screenshot I&#39;ve set up a three-project solution: the first is the NuGet package project, the middle is a shared project the NuGet package project will have a dependency on, and the SampleNugetConsumer is what I&#39;ll attempt to install the resulting NuGet package from the first project into:&lt;/p&gt;
+&lt;picture&gt;
+      &lt;source type=&quot;image/webp&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/kGah140kO5-400.webp 400w, https://www.nickquinn.co.uk/assets/images/kGah140kO5-800.webp 800w, https://www.nickquinn.co.uk/assets/images/kGah140kO5-1280.webp 1280w, https://www.nickquinn.co.uk/assets/images/kGah140kO5-1860.webp 1860w&quot; sizes=&quot;100vw&quot; /&gt;
+&lt;source type=&quot;image/jpeg&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/kGah140kO5-400.jpeg 400w, https://www.nickquinn.co.uk/assets/images/kGah140kO5-800.jpeg 800w, https://www.nickquinn.co.uk/assets/images/kGah140kO5-1280.jpeg 1280w, https://www.nickquinn.co.uk/assets/images/kGah140kO5-1860.jpeg 1860w&quot; sizes=&quot;100vw&quot; /&gt;
+      &lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/kGah140kO5-1860.webp&quot; width=&quot;1860&quot; height=&quot;604&quot; alt=&quot;Set up of the example NuGet project&quot; loading=&quot;lazy&quot; decoding=&quot;async&quot; /&gt;
+    &lt;/picture&gt;
+&lt;p&gt;If I build this project, and look at the information for the NuGet package in the NuGet package manager, it tells me that this package has a dependency on SampleNuget.Shared:&lt;/p&gt;
+&lt;picture&gt;
+      &lt;source type=&quot;image/webp&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/pWpTgYaMvx-400.webp 400w, https://www.nickquinn.co.uk/assets/images/pWpTgYaMvx-666.webp 666w&quot; sizes=&quot;100vw&quot; /&gt;
+&lt;source type=&quot;image/jpeg&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/pWpTgYaMvx-400.jpeg 400w, https://www.nickquinn.co.uk/assets/images/pWpTgYaMvx-666.jpeg 666w&quot; sizes=&quot;100vw&quot; /&gt;
+      &lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/pWpTgYaMvx-666.webp&quot; width=&quot;666&quot; height=&quot;350&quot; alt=&quot;NuGet package manager showing the package with NuGet dependencies&quot; loading=&quot;lazy&quot; decoding=&quot;async&quot; /&gt;
+    &lt;/picture&gt;
+&lt;p&gt;Trying to install this NuGet package results in an error, because the dependent package is not available:&lt;/p&gt;
+&lt;picture&gt;
+      &lt;source type=&quot;image/webp&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-400.webp 400w, https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-800.webp 800w, https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-1280.webp 1280w, https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-1376.webp 1376w&quot; sizes=&quot;100vw&quot; /&gt;
+&lt;source type=&quot;image/jpeg&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-400.jpeg 400w, https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-800.jpeg 800w, https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-1280.jpeg 1280w, https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-1376.jpeg 1376w&quot; sizes=&quot;100vw&quot; /&gt;
+      &lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/q7zhjTykZa-1376.webp&quot; width=&quot;1376&quot; height=&quot;146&quot; alt=&quot;Missing dependency error&quot; loading=&quot;lazy&quot; decoding=&quot;async&quot; /&gt;
+    &lt;/picture&gt;
+&lt;p&gt;By making the following additions (in red) to the NuGet package&#39;s csproj file, the shared project will be built and the resulting DLL will be made part of the NuGet package, instead of an external dependency:&lt;/p&gt;
+&lt;picture&gt;
+      &lt;source type=&quot;image/webp&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-400.webp 400w, https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-800.webp 800w, https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-1280.webp 1280w, https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-1556.webp 1556w&quot; sizes=&quot;100vw&quot; /&gt;
+&lt;source type=&quot;image/jpeg&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-400.jpeg 400w, https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-800.jpeg 800w, https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-1280.jpeg 1280w, https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-1556.jpeg 1556w&quot; sizes=&quot;100vw&quot; /&gt;
+      &lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/3-SxZvctrF-1556.webp&quot; width=&quot;1556&quot; height=&quot;630&quot; alt=&quot;Missing dependency error&quot; loading=&quot;lazy&quot; decoding=&quot;async&quot; /&gt;
+    &lt;/picture&gt;
+&lt;p&gt;Now when I try to install the NuGet package, the external dependency is gone, and I can install the package, which now includes the shared project code:&lt;/p&gt;
+&lt;picture&gt;
+      &lt;source type=&quot;image/webp&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-400.webp 400w, https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-800.webp 800w, https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-1280.webp 1280w, https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-1324.webp 1324w&quot; sizes=&quot;100vw&quot; /&gt;
+&lt;source type=&quot;image/jpeg&quot; srcset=&quot;https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-400.jpeg 400w, https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-800.jpeg 800w, https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-1280.jpeg 1280w, https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-1324.jpeg 1324w&quot; sizes=&quot;100vw&quot; /&gt;
+      &lt;img src=&quot;https://www.nickquinn.co.uk/assets/images/05qwhXDQ8N-1324.webp&quot; width=&quot;1324&quot; height=&quot;320&quot; alt=&quot;Installable NuGet package with no external dependencies&quot; loading=&quot;lazy&quot; decoding=&quot;async&quot; /&gt;
+    &lt;/picture&gt;
+</description>
+      <pubDate>Fri, 22 Mar 2024 00:00:00 GMT</pubDate>
+      <dc:creator>Nick Quinn</dc:creator>
+      <guid>https://www.nickquinn.co.uk/posts/including-project-dependencies-in-nuget-packages/</guid>
+    </item>
+    <item>
+      <title>Using H1 for a website&#39;s main title vs individual page headings</title>
+      <link>https://www.nickquinn.co.uk/posts/h1-headings-for-site-or-page/</link>
+      <description>&lt;h1&gt;Using H1 for a website&#39;s main title vs individual page headings&lt;/h1&gt;
+&lt;p&gt;I was recently contacted by friends who had an SEO audit done on their website, and one of the items that was flagged in their SEO report was that they were using a &#39;Heading 1&#39; or &#39;H1&#39; tag for the name of their website, and using H2 tags for main titles of individual pages.&lt;/p&gt;
+&lt;p&gt;According to the SEO company who performed the audit, this is bad practice, and can have a negative impact on SEO. It&#39;s believed that search engines use the H1 tag to determine the subject of the page, that there should only be one H1 tag, and it should be used to state the content of the page, not the website for those reasons.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;But is there any truth in that?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To cut a long article short: no, there&#39;s nothing wrong with using H1 tags for your site&#39;s main title, and using H2 tags to describe the page content. There&#39;s no problem if you want to avoid doing this, and instead use H1 for the individual page titles either.&lt;/p&gt;
+&lt;h2&gt;Considerations for page titles&lt;/h2&gt;
+&lt;p&gt;Whilst you&#39;re free to choose either of the two ways to title your pages, what&#39;s important is to make your HTML pages semantically correct: that means your titles and content should follow some sort of order. It&#39;s fine to have multiple headings on a page, it&#39;s &lt;em&gt;even&lt;/em&gt; okay to have multiple H1 headings on a page, but make sure the headings follow a logical order: don&#39;t jump from a H1 tag to an H3 tag for example, just because the text in the H3 tag &amp;quot;looks&amp;quot; like a better size/fit to you, or make up your own arbitary rules about when to use certain heading sizes, such as &amp;quot;all info boxes on the page will use H4&amp;quot;.&lt;/p&gt;
+&lt;p&gt;Search engines don&#39;t read the page like we do, they don&#39;t see the fancy design or layout, so they process the HTML as they see it, and you can harm your SEO ranking by breaking these rules.&lt;/p&gt;
+&lt;h2&gt;What does Google have to say on use of headings?&lt;/h2&gt;
+&lt;p&gt;Google has a useful video on use of heading tags which you can watch on YouTube. &lt;a href=&quot;https://www.youtube.com/watch?v=WsgrSxCmMbM&quot; class=&quot;external-link&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Click here to watch Google&#39;s advice on H1 tags on YouTube&lt;/a&gt;.&lt;/p&gt;
+</description>
+      <pubDate>Tue, 02 Apr 2024 01:00:00 GMT</pubDate>
+      <dc:creator>Nick Quinn</dc:creator>
+      <guid>https://www.nickquinn.co.uk/posts/h1-headings-for-site-or-page/</guid>
+    </item>
+    <item>
+      <title>Attaching Entra ID tokens to Axios requests in React</title>
+      <link>https://www.nickquinn.co.uk/posts/entra-id-axios-interceptor/</link>
+      <description>&lt;h1&gt;Attaching Entra ID tokens to Axios requests in React&lt;/h1&gt;
+&lt;p&gt;When building a React app that authenticates via Microsoft Entra ID (formerly Azure AD) and needs to call a protected .NET API, you&#39;ll need to attach a Bearer token to every outgoing request. Rather than doing this manually in each API call, you can use an Axios interceptor to handle it in one place using &lt;code&gt;@azure/msal-browser&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;You&#39;ll need @azure/msal-browser and axios installed, and an Entra ID app
+registration with a client ID and an API scope exposed — something like
+api://&lt;your-client-id&gt;/access_as_user.&lt;/your-client-id&gt;&lt;/p&gt;
+&lt;h2&gt;Initialising MSAL&lt;/h2&gt;
+&lt;p&gt;First, create and export a &lt;code&gt;PublicClientApplication&lt;/code&gt; instance:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-js&quot;&gt;// src/msalInstance.js
+import { PublicClientApplication } from &amp;quot;@azure/msal-browser&amp;quot;;
+
+const msalConfig = {
+  auth: {
+    clientId: &amp;quot;&amp;lt;your-client-id&amp;gt;&amp;quot;,
+    authority: &amp;quot;https://login.microsoftonline.com/&amp;lt;your-tenant-id&amp;gt;&amp;quot;,
+    redirectUri: window.location.origin,
+  },
+};
+
+export const msalInstance = new PublicClientApplication(msalConfig);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;MSAL needs to process any redirect responses before you start making token
+requests, so call initialize() before rendering:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-js&quot;&gt;// src/main.jsx
+import React from &amp;quot;react&amp;quot;;
+import ReactDOM from &amp;quot;react-dom/client&amp;quot;;
+import App from &amp;quot;./App&amp;quot;;
+import { msalInstance } from &amp;quot;./msalInstance&amp;quot;;
+
+async function init() {
+  await msalInstance.initialize();
+
+  ReactDOM.createRoot(document.getElementById(&amp;quot;root&amp;quot;)).render(
+    &amp;lt;React.StrictMode&amp;gt;
+      &amp;lt;App /&amp;gt;
+    &amp;lt;/React.StrictMode&amp;gt;
+  );
+}
+
+init();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;The Axios interceptor&lt;/h2&gt;
+&lt;p&gt;It&#39;s worth setting the active account here too, before any components
+render and potentially trigger API calls — if no active account is set,
+acquireTokenSilent will throw.&lt;/p&gt;
+&lt;p&gt;With that done, the interceptor itself is straightforward:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-js&quot;&gt;// src/apiClient.js
+import axios from &amp;quot;axios&amp;quot;;
+import { InteractionRequiredAuthError } from &amp;quot;@azure/msal-browser&amp;quot;;
+import { msalInstance } from &amp;quot;./msalInstance&amp;quot;;
+
+const apiClient = axios.create({
+  baseURL: &amp;quot;https://your-api.example.com&amp;quot;,
+});
+
+const apiScopes = [&amp;quot;api://&amp;lt;your-client-id&amp;gt;/access_as_user&amp;quot;];
+
+apiClient.interceptors.request.use(async (config) =&amp;gt; {
+  const account = msalInstance.getActiveAccount();
+
+  // getActiveAccount() returns null if no account is set. Passing null to
+  // acquireTokenSilent throws a generic error, not InteractionRequiredAuthError,
+  // so we catch it here and go straight to the popup flow instead.
+  if (!account) {
+    const tokenResponse = await msalInstance.acquireTokenPopup({
+      scopes: apiScopes,
+    });
+    config.headers.Authorization = `Bearer ${tokenResponse.accessToken}`;
+    return config;
+  }
+
+  try {
+    const tokenResponse = await msalInstance.acquireTokenSilent({
+      scopes: apiScopes,
+      account,
+    });
+
+    config.headers.Authorization = `Bearer ${tokenResponse.accessToken}`;
+  } catch (error) {
+    if (error instanceof InteractionRequiredAuthError) {
+      // Silent acquisition failed (e.g. consent needed, session expired)
+      const tokenResponse = await msalInstance.acquireTokenPopup({
+        scopes: apiScopes,
+      });
+
+      config.headers.Authorization = `Bearer ${tokenResponse.accessToken}`;
+    } else {
+      throw error;
+    }
+  }
+
+  return config;
+});
+
+export default apiClient;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;acquireTokenSilent&lt;/code&gt; returns a cached or silently refreshed token where
+possible, falling back to a popup when it can&#39;t — for example if the user
+needs to consent to a new scope, or their session has expired.&lt;/p&gt;
+&lt;p&gt;One thing that caught me out: the scope needs to be the full URI. Using
+just &amp;quot;access_as_user&amp;quot; causes MSAL to issue a Microsoft Graph token instead
+of one for your API, and the .NET API will reject it with a 401 because
+the &lt;code&gt;aud&lt;/code&gt; claim won&#39;t match.&lt;/p&gt;
+</description>
+      <pubDate>Sun, 30 Nov 2025 00:00:00 GMT</pubDate>
+      <dc:creator>Nick Quinn</dc:creator>
+      <guid>https://www.nickquinn.co.uk/posts/entra-id-axios-interceptor/</guid>
+    </item>
+  </channel>
+</rss>

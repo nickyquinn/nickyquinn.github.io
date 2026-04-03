@@ -1,0 +1,348 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-US-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attaching Entra ID tokens to Axios requests in React - Nick Quinn</title>
+    <link href="/assets/style/base.2056c690.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <meta name="author" content="Nick Quinn">
+    <meta name="description" content="How to use @azure/msal-browser and an Axios interceptor to attach Entra ID Bearer tokens to every API request." />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <meta property="og:title" content="Attaching Entra ID tokens to Axios requests in React"/>
+    <meta property="og:url" content="/posts/entra-id-axios-interceptor/" />
+    <meta property="og:description" content="How to use @azure/msal-browser and an Axios interceptor to attach Entra ID Bearer tokens to every API request." />
+    <meta property="og:image" content="/favicon/apple-touch-icon.png" />
+    <meta property="og:type" content="article" />
+
+    
+
+    <script>
+      (function() {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      if(localStorage.getItem("consentMode") === null) {
+        gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'analytics_storage': 'denied'
+        });
+      } else {
+        gtag("consent", "default", JSON.parse(localStorage.getItem("consentMode")));
+      }
+    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M98D584C');</script>
+    <!-- End Google Tag Manager -->
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M98D584C"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="wrapper">
+    <header>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="site-title">
+              <a href="/">Nick Quinn</a>
+              
+            </div>
+            <nav area-label="main">
+              <ul>
+                <li><a href="/about" >About</a></li>
+                <li><a href="/posts" class="nav-active">Posts</a></li>
+                <li><a href="/stuff" >Stuff</a></li>
+                <li><a href="/books" >Books</a></li>
+              </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+              <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+              <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      
+    </header>
+
+    <main class="page-body">
+        <article>
+            
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="post_content">
+                <h1>Attaching Entra ID tokens to Axios requests in React</h1>
+<p>When building a React app that authenticates via Microsoft Entra ID (formerly Azure AD) and needs to call a protected .NET API, you'll need to attach a Bearer token to every outgoing request. Rather than doing this manually in each API call, you can use an Axios interceptor to handle it in one place using <code>@azure/msal-browser</code>.</p>
+<p>You'll need @azure/msal-browser and axios installed, and an Entra ID app
+registration with a client ID and an API scope exposed — something like
+api://<your-client-id>/access_as_user.</p>
+<h2>Initialising MSAL</h2>
+<p>First, create and export a <code>PublicClientApplication</code> instance:</p>
+<pre><code class="language-js">// src/msalInstance.js
+import { PublicClientApplication } from &quot;@azure/msal-browser&quot;;
+
+const msalConfig = {
+  auth: {
+    clientId: &quot;&lt;your-client-id&gt;&quot;,
+    authority: &quot;https://login.microsoftonline.com/&lt;your-tenant-id&gt;&quot;,
+    redirectUri: window.location.origin,
+  },
+};
+
+export const msalInstance = new PublicClientApplication(msalConfig);
+</code></pre>
+<p>MSAL needs to process any redirect responses before you start making token
+requests, so call initialize() before rendering:</p>
+<pre><code class="language-js">// src/main.jsx
+import React from &quot;react&quot;;
+import ReactDOM from &quot;react-dom/client&quot;;
+import App from &quot;./App&quot;;
+import { msalInstance } from &quot;./msalInstance&quot;;
+
+async function init() {
+  await msalInstance.initialize();
+
+  ReactDOM.createRoot(document.getElementById(&quot;root&quot;)).render(
+    &lt;React.StrictMode&gt;
+      &lt;App /&gt;
+    &lt;/React.StrictMode&gt;
+  );
+}
+
+init();
+</code></pre>
+<h2>The Axios interceptor</h2>
+<p>It's worth setting the active account here too, before any components
+render and potentially trigger API calls — if no active account is set,
+acquireTokenSilent will throw.</p>
+<p>With that done, the interceptor itself is straightforward:</p>
+<pre><code class="language-js">// src/apiClient.js
+import axios from &quot;axios&quot;;
+import { InteractionRequiredAuthError } from &quot;@azure/msal-browser&quot;;
+import { msalInstance } from &quot;./msalInstance&quot;;
+
+const apiClient = axios.create({
+  baseURL: &quot;https://your-api.example.com&quot;,
+});
+
+const apiScopes = [&quot;api://&lt;your-client-id&gt;/access_as_user&quot;];
+
+apiClient.interceptors.request.use(async (config) =&gt; {
+  const account = msalInstance.getActiveAccount();
+
+  // getActiveAccount() returns null if no account is set. Passing null to
+  // acquireTokenSilent throws a generic error, not InteractionRequiredAuthError,
+  // so we catch it here and go straight to the popup flow instead.
+  if (!account) {
+    const tokenResponse = await msalInstance.acquireTokenPopup({
+      scopes: apiScopes,
+    });
+    config.headers.Authorization = `Bearer ${tokenResponse.accessToken}`;
+    return config;
+  }
+
+  try {
+    const tokenResponse = await msalInstance.acquireTokenSilent({
+      scopes: apiScopes,
+      account,
+    });
+
+    config.headers.Authorization = `Bearer ${tokenResponse.accessToken}`;
+  } catch (error) {
+    if (error instanceof InteractionRequiredAuthError) {
+      // Silent acquisition failed (e.g. consent needed, session expired)
+      const tokenResponse = await msalInstance.acquireTokenPopup({
+        scopes: apiScopes,
+      });
+
+      config.headers.Authorization = `Bearer ${tokenResponse.accessToken}`;
+    } else {
+      throw error;
+    }
+  }
+
+  return config;
+});
+
+export default apiClient;
+</code></pre>
+<p><code>acquireTokenSilent</code> returns a cached or silently refreshed token where
+possible, falling back to a popup when it can't — for example if the user
+needs to consent to a new scope, or their session has expired.</p>
+<p>One thing that caught me out: the scope needs to be the full URI. Using
+just &quot;access_as_user&quot; causes MSAL to issue a Microsoft Graph token instead
+of one for your API, and the .NET API will reject it with a 401 because
+the <code>aud</code> claim won't match.</p>
+
+
+                <div class="meta-text">Posted on Sun Nov 30 2025</span>
+            </div>
+        </div>
+    </div>
+</div>
+        </article>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            © Nick Quinn <span id="site-year"></span>
+            <a href="javascript:void(0);" onclick="showConsentModal(); return false;" rel="nofollow">Manage cookies</a>
+            <a href="/feed.xml">RSS</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div id="cookie-consent-cover" class="cookie-consent-cover">
+    </div>
+
+    <div id="cookie-consent-banner" class="cookie-consent-banner">
+      <div class="consent-content">
+        <h2>Use of cookies</h2>
+        <p>I'd like to set cookies so I can see who has visited the site and understand what content is interesting. The data I collect is anonymous. If that's okay with you press 'accept selection', or you can customise whcih cookies you agree to first.</p>
+        
+        <button id="btn-customise-cookies" class="cookie-consent-button btn-outline">Manage cookies</button>
+        <button id="btn-accept-all" class="cookie-consent-button btn">Accept</button>
+      </div>
+    </div>
+
+    <!-- Cookie consent modal html with options to reject or accept with checkboxes -->
+    <div id="cookie-consent-modal">
+      <div class="cookie-consent-modal-content">
+        <h2>Cookie settings</h2>
+        <p>I'd like to set cookies so I can see who has visited the site and understand what content is interesting. The data I collect is anonymous. If that's okay with you press 'accept selection', or you can customise whcih cookies you agree to first.</p>
+        <div class="cookie-consent-options">
+          <label><input id="consent-necessary" type="checkbox" value="Necessary" checked disabled>Necessary</label>
+          <label><input id="consent-analytics" type="checkbox" value="Analytics" checked>Analytics</label>
+          
+        </div>
+        <button id="btn-accept-cookie-selection" class="cookie-consent-button btn-outline">Accept Selection</button>
+      </div>
+    </div>
+<script>
+  
+  function hideBanner() {
+    document.getElementById('cookie-consent-banner').classList.remove('visible');
+    document.getElementById('cookie-consent-cover').classList.remove('visible');
+  }
+
+  function hideConsentModal() {
+    document.getElementById('cookie-consent-modal').classList.remove('visible');
+    document.getElementById('cookie-consent-cover').classList.remove('visible');
+  }
+
+  document.getElementById('btn-customise-cookies').addEventListener('click', function() {
+    hideBanner();
+    showConsentModal();
+  });
+
+  document.getElementById('btn-accept-all').addEventListener('click', function() {
+    setConsent({
+      necessary: true,
+      analytics: true,
+      //preferences: true,
+      //marketing: true
+    });
+    hideBanner();
+    hideConsentModal();
+  });
+
+  document.getElementById('btn-accept-cookie-selection').addEventListener('click', function() {
+    setConsent({
+      necessary: true,
+      analytics: document.getElementById('consent-analytics').checked,
+      //preferences: false,
+      //marketing: false
+    });
+    hideBanner();
+    hideConsentModal();
+  });
+    
+
+  if(localStorage.getItem('consentMode') === null) {
+    document.getElementById('cookie-consent-banner').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+  } else {
+    hideBanner();
+  }
+  
+  function setConsent(consent) {
+    const consentMode = {
+      'functionality_storage': consent.necessary ? 'granted' : 'denied',
+      'security_storage': consent.necessary ? 'granted' : 'denied',
+      'ad_storage': consent.marketing ? 'granted' : 'denied',
+      'analytics_storage': consent.analytics ? 'granted' : 'denied',
+      'personalization': consent.preferences ? 'granted' : 'denied',
+    };
+    gtag('consent', 'update', consent);  
+    localStorage.setItem('consentMode', JSON.stringify(consentMode));
+  }
+
+  function showConsentBanner() {
+    document.getElementById('cookie-consent-banner').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+  }
+
+  function showConsentModal() {
+    document.getElementById('cookie-consent-modal').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+
+    if(localStorage.getItem('consentMode') === null) {
+      document.getElementById('consent-analytics').checked = true;
+    } else {
+      const consentMode = JSON.parse(localStorage.getItem('consentMode'));
+      document.getElementById('consent-analytics').checked = consentMode.analytics_storage === 'granted';
+    }
+  }
+  // Set dynamic year in footer
+  (function() {
+    var yearEl = document.getElementById('site-year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+  })();
+
+  document.getElementById('theme-toggle').addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    }
+  });
+
+</script>
+
+    </div>
+  </body>
+</html>

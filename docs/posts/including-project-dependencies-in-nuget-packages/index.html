@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-US-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Including same-solution project dependencies in NuGet packages - Nick Quinn</title>
+    <link href="/assets/style/base.2056c690.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <meta name="author" content="Nick Quinn">
+    <meta name="description" content="How to ensure your NuGet packages DLLs from other projects in the same solution." />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <meta property="og:title" content="Including same-solution project dependencies in NuGet packages"/>
+    <meta property="og:url" content="/posts/including-project-dependencies-in-nuget-packages/" />
+    <meta property="og:description" content="How to ensure your NuGet packages DLLs from other projects in the same solution." />
+    <meta property="og:image" content="/favicon/apple-touch-icon.png" />
+    <meta property="og:type" content="article" />
+
+    
+
+    <script>
+      (function() {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      if(localStorage.getItem("consentMode") === null) {
+        gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'analytics_storage': 'denied'
+        });
+      } else {
+        gtag("consent", "default", JSON.parse(localStorage.getItem("consentMode")));
+      }
+    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M98D584C');</script>
+    <!-- End Google Tag Manager -->
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M98D584C"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="wrapper">
+    <header>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="site-title">
+              <a href="/">Nick Quinn</a>
+              
+            </div>
+            <nav area-label="main">
+              <ul>
+                <li><a href="/about" >About</a></li>
+                <li><a href="/posts" class="nav-active">Posts</a></li>
+                <li><a href="/stuff" >Stuff</a></li>
+                <li><a href="/books" >Books</a></li>
+              </ul>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+              <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+              <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      
+    </header>
+
+    <main class="page-body">
+        <article>
+            
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="post_content">
+                <h1>Including same-solution project dependencies in NuGet packages</h1>
+<p>A regular pattern in .NET is to break software down into multiple projects within a Visual Studio solution; this helps developers visually identify separation of concerns, but it also allows parts of the code base to be different project types or languages. Another common reason may be that a solution produces more than one resulting piece of software, such as a web frontend, and an API for that frontend; in this scenario, you may have <em>three or more</em> projects: the web project, the API project, and one or more library project containing code that's shared between the first two - these additional library projects may include things such as DTOs or &quot;data transfer objects&quot; - objects whose only purpose is to carry data between processes. When each project is built, each gets a copy of any shared library DLLs.</p>
+<p>But what if one of your published outputs is a NuGet package? Things work differently here: NuGet packages do not automatically get bundled with their shared library projects, and viewing the nupkg file will reveal that it has a dependency on these projects, and that you're expected to provide them, potentially as separate NuGet packages. This is fine if you want this behaviour, but what if you don't?</p>
+<p>In the below screenshot I've set up a three-project solution: the first is the NuGet package project, the middle is a shared project the NuGet package project will have a dependency on, and the SampleNugetConsumer is what I'll attempt to install the resulting NuGet package from the first project into:</p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/kGah140kO5-400.webp 400w, /assets/images/kGah140kO5-800.webp 800w, /assets/images/kGah140kO5-1280.webp 1280w, /assets/images/kGah140kO5-1860.webp 1860w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/kGah140kO5-400.jpeg 400w, /assets/images/kGah140kO5-800.jpeg 800w, /assets/images/kGah140kO5-1280.jpeg 1280w, /assets/images/kGah140kO5-1860.jpeg 1860w" sizes="100vw">
+      <img src="/assets/images/kGah140kO5-1860.webp" width="1860" height="604" alt="Set up of the example NuGet project" loading="lazy" decoding="async">
+    </picture>
+<p>If I build this project, and look at the information for the NuGet package in the NuGet package manager, it tells me that this package has a dependency on SampleNuget.Shared:</p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/pWpTgYaMvx-400.webp 400w, /assets/images/pWpTgYaMvx-666.webp 666w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/pWpTgYaMvx-400.jpeg 400w, /assets/images/pWpTgYaMvx-666.jpeg 666w" sizes="100vw">
+      <img src="/assets/images/pWpTgYaMvx-666.webp" width="666" height="350" alt="NuGet package manager showing the package with NuGet dependencies" loading="lazy" decoding="async">
+    </picture>
+<p>Trying to install this NuGet package results in an error, because the dependent package is not available:</p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/q7zhjTykZa-400.webp 400w, /assets/images/q7zhjTykZa-800.webp 800w, /assets/images/q7zhjTykZa-1280.webp 1280w, /assets/images/q7zhjTykZa-1376.webp 1376w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/q7zhjTykZa-400.jpeg 400w, /assets/images/q7zhjTykZa-800.jpeg 800w, /assets/images/q7zhjTykZa-1280.jpeg 1280w, /assets/images/q7zhjTykZa-1376.jpeg 1376w" sizes="100vw">
+      <img src="/assets/images/q7zhjTykZa-1376.webp" width="1376" height="146" alt="Missing dependency error" loading="lazy" decoding="async">
+    </picture>
+<p>By making the following additions (in red) to the NuGet package's csproj file, the shared project will be built and the resulting DLL will be made part of the NuGet package, instead of an external dependency:</p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/3-SxZvctrF-400.webp 400w, /assets/images/3-SxZvctrF-800.webp 800w, /assets/images/3-SxZvctrF-1280.webp 1280w, /assets/images/3-SxZvctrF-1556.webp 1556w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/3-SxZvctrF-400.jpeg 400w, /assets/images/3-SxZvctrF-800.jpeg 800w, /assets/images/3-SxZvctrF-1280.jpeg 1280w, /assets/images/3-SxZvctrF-1556.jpeg 1556w" sizes="100vw">
+      <img src="/assets/images/3-SxZvctrF-1556.webp" width="1556" height="630" alt="Missing dependency error" loading="lazy" decoding="async">
+    </picture>
+<p>Now when I try to install the NuGet package, the external dependency is gone, and I can install the package, which now includes the shared project code:</p>
+<picture >
+      <source type="image/webp" srcset="/assets/images/05qwhXDQ8N-400.webp 400w, /assets/images/05qwhXDQ8N-800.webp 800w, /assets/images/05qwhXDQ8N-1280.webp 1280w, /assets/images/05qwhXDQ8N-1324.webp 1324w" sizes="100vw">
+<source type="image/jpeg" srcset="/assets/images/05qwhXDQ8N-400.jpeg 400w, /assets/images/05qwhXDQ8N-800.jpeg 800w, /assets/images/05qwhXDQ8N-1280.jpeg 1280w, /assets/images/05qwhXDQ8N-1324.jpeg 1324w" sizes="100vw">
+      <img src="/assets/images/05qwhXDQ8N-1324.webp" width="1324" height="320" alt="Installable NuGet package with no external dependencies" loading="lazy" decoding="async">
+    </picture>
+
+
+                <div class="meta-text">Posted on Fri Mar 22 2024</span>
+            </div>
+        </div>
+    </div>
+</div>
+        </article>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            © Nick Quinn <span id="site-year"></span>
+            <a href="javascript:void(0);" onclick="showConsentModal(); return false;" rel="nofollow">Manage cookies</a>
+            <a href="/feed.xml">RSS</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div id="cookie-consent-cover" class="cookie-consent-cover">
+    </div>
+
+    <div id="cookie-consent-banner" class="cookie-consent-banner">
+      <div class="consent-content">
+        <h2>Use of cookies</h2>
+        <p>I'd like to set cookies so I can see who has visited the site and understand what content is interesting. The data I collect is anonymous. If that's okay with you press 'accept selection', or you can customise whcih cookies you agree to first.</p>
+        
+        <button id="btn-customise-cookies" class="cookie-consent-button btn-outline">Manage cookies</button>
+        <button id="btn-accept-all" class="cookie-consent-button btn">Accept</button>
+      </div>
+    </div>
+
+    <!-- Cookie consent modal html with options to reject or accept with checkboxes -->
+    <div id="cookie-consent-modal">
+      <div class="cookie-consent-modal-content">
+        <h2>Cookie settings</h2>
+        <p>I'd like to set cookies so I can see who has visited the site and understand what content is interesting. The data I collect is anonymous. If that's okay with you press 'accept selection', or you can customise whcih cookies you agree to first.</p>
+        <div class="cookie-consent-options">
+          <label><input id="consent-necessary" type="checkbox" value="Necessary" checked disabled>Necessary</label>
+          <label><input id="consent-analytics" type="checkbox" value="Analytics" checked>Analytics</label>
+          
+        </div>
+        <button id="btn-accept-cookie-selection" class="cookie-consent-button btn-outline">Accept Selection</button>
+      </div>
+    </div>
+<script>
+  
+  function hideBanner() {
+    document.getElementById('cookie-consent-banner').classList.remove('visible');
+    document.getElementById('cookie-consent-cover').classList.remove('visible');
+  }
+
+  function hideConsentModal() {
+    document.getElementById('cookie-consent-modal').classList.remove('visible');
+    document.getElementById('cookie-consent-cover').classList.remove('visible');
+  }
+
+  document.getElementById('btn-customise-cookies').addEventListener('click', function() {
+    hideBanner();
+    showConsentModal();
+  });
+
+  document.getElementById('btn-accept-all').addEventListener('click', function() {
+    setConsent({
+      necessary: true,
+      analytics: true,
+      //preferences: true,
+      //marketing: true
+    });
+    hideBanner();
+    hideConsentModal();
+  });
+
+  document.getElementById('btn-accept-cookie-selection').addEventListener('click', function() {
+    setConsent({
+      necessary: true,
+      analytics: document.getElementById('consent-analytics').checked,
+      //preferences: false,
+      //marketing: false
+    });
+    hideBanner();
+    hideConsentModal();
+  });
+    
+
+  if(localStorage.getItem('consentMode') === null) {
+    document.getElementById('cookie-consent-banner').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+  } else {
+    hideBanner();
+  }
+  
+  function setConsent(consent) {
+    const consentMode = {
+      'functionality_storage': consent.necessary ? 'granted' : 'denied',
+      'security_storage': consent.necessary ? 'granted' : 'denied',
+      'ad_storage': consent.marketing ? 'granted' : 'denied',
+      'analytics_storage': consent.analytics ? 'granted' : 'denied',
+      'personalization': consent.preferences ? 'granted' : 'denied',
+    };
+    gtag('consent', 'update', consent);  
+    localStorage.setItem('consentMode', JSON.stringify(consentMode));
+  }
+
+  function showConsentBanner() {
+    document.getElementById('cookie-consent-banner').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+  }
+
+  function showConsentModal() {
+    document.getElementById('cookie-consent-modal').classList.add('visible');
+    document.getElementById('cookie-consent-cover').classList.add('visible');
+
+    if(localStorage.getItem('consentMode') === null) {
+      document.getElementById('consent-analytics').checked = true;
+    } else {
+      const consentMode = JSON.parse(localStorage.getItem('consentMode'));
+      document.getElementById('consent-analytics').checked = consentMode.analytics_storage === 'granted';
+    }
+  }
+  // Set dynamic year in footer
+  (function() {
+    var yearEl = document.getElementById('site-year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear();
+    }
+  })();
+
+  document.getElementById('theme-toggle').addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    }
+  });
+
+</script>
+
+    </div>
+  </body>
+</html>

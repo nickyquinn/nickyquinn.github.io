@@ -109,3 +109,6 @@ dist
 # Eleventy output
 _site/
 docs/
+
+# Python
+__pycache__/

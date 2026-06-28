@@ -700,6 +700,8 @@ section {
 
 #townsquare-root {
   margin-bottom: 0;
+  position: relative;
+  z-index: 1;
 }
 
 footer {

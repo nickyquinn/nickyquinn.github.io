@@ -3,7 +3,7 @@
   margin: auto;
 
 
-  :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(code):not(pre) {
+  :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(code):not(pre):not(a) {
     margin: 1.5rem 0;
   }
 
@@ -13,5 +13,29 @@
 
   pre code {
     font-size: 1rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+
+  th,
+  td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+
+  th {
+    background: var(--bg-subtle);
+    color: var(--text);
+    font-weight: 700;
+    border-bottom: 2px solid var(--border);
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--bg-subtle);
   }
 }
